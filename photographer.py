@@ -30,7 +30,7 @@ def safety_check_args(args_dict):
             good_instance = isinstance(args_dict[arg_mandatory[0]], arg_mandatory[1])
 
             if not good_instance:
-                print_msg(f"Argument --{arg_mandatory} could not be parsed. Please follow the format.", verbose=True)
+                print_msg(f"Argument --{arg_mandatory[0]} could not be parsed. Please follow the format.", verbose=True)
                 usage()
                 exit(-1)
 
