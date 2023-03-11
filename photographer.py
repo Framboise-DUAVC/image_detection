@@ -10,9 +10,11 @@ def usage():
            "/home/pi/photos_example" \
            "\n\t-> photographer.py 10 2 /home/pi/photos_example"
 
+
 def print_msg(msg, verbose):
     if verbose:
         print(msg)
+
 
 def main(args, verbose=True):
     # Safety check
@@ -51,8 +53,8 @@ def main(args, verbose=True):
         finally:
             camera.stop_preview()
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     # Call main running function
     main(sys.argv[1:] if len(sys.argv[1:]) > 1 else [], verbose=False)
 
