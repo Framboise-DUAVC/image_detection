@@ -44,10 +44,8 @@ def main(args):
         print(usage())
         exit(-1)
 
+    # Get the useful arguments
     args = sys.argv[1:]
-
-    # Print collected arguments
-    print(f"Arguments read: {args}")
 
     # Set the arguments
     args_dict = tools.parse_arguments(args=args)
