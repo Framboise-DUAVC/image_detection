@@ -19,13 +19,22 @@ def print_msg(msg, verbose):
 
 def safety_check_args(args_dict):
     # Safety check mandatory arguments
-    mandatory_list = ["time", "freq"]
+    mandatory_names = [("time", int), ("freq", int)]
 
-    for arg_mandatory in mandatory_list:
-        if arg_mandatory not in args_dict:
+    for arg_mandatory in mandatory_names:
+        if arg_mandatory[0] not in args_dict:
             print_msg(f"Argument --{arg_mandatory} is mandatory! Please provide it.", verbose=True)
             usage()
             exit(-1)
+        else:
+            good_instance = isinstance(args_dict[arg_mandatory[0]], arg_mandatory[1])
+
+            if not good_instance:
+                print_msg(f"Argument --{arg_mandatory} could not be parsed. Please follow the format.", verbose=True)
+                usage()
+                exit(-1)
+
+
 
 
 def main(args):
@@ -50,8 +59,8 @@ def main(args):
     safety_check_args(args_dict)
 
     # Set the arguments
-    time_secs = args_dict["time"]
-    freq_phot = args_dict["freq"]
+    time_secs = int(args_dict["time"])
+    freq_phot = int(args_dict["freq"])
     output = args_dict["output"] if "output" in args_dict else "/home/pi/captures/"
 
     # Compute total iterations
