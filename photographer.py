@@ -38,6 +38,7 @@ def safety_check_args(args_dict):
                 usage()
                 exit(-1)
 
+
 def main(args):
     # Safety check
     if len(args) == 0:
