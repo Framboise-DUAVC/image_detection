@@ -69,13 +69,13 @@ def main(args):
     if not os.path.exists(output):
         os.mkdir(output)
         if verbose:
-            print(f"Successfully created output directory: {output}")
+            print_msg(f"Successfully created output directory: {output}", verbose)
 
     with picamera.PiCamera() as camera:
         camera.start_preview()
         try:
             for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:02d}.jpg'))):
-                print(filename, verbose)
+                print_msg(filename, verbose)
                 time.sleep(time_wait)
                 if i == it_max:
                     break
