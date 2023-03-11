@@ -6,10 +6,12 @@ import tools
 
 
 def usage():
-    return "photographer.py --time <int> --freq <int> --output <string:OPTIONAL> --verbose <True/False:OPTIONAL>" \
+    return "---Usage Follows---" \
+           "\nphotographer.py --time <int> --freq <int> --output <string:OPTIONAL> --verbose <True/False:OPTIONAL>" \
            "\nAs an Example, 10 seconds operation for 2 pictures/second (frequency) to be dumped in: " \
            "/home/pi/photos_example" \
-           "\n\t-> photographer.py --time 10 --freq 2 --output /home/pi/photos_example"
+           "\n\t-> photographer.py --time 10 --freq 2 --output /home/pi/photos_example" \
+           "\n"
 
 
 def print_msg(msg, verbose):
@@ -27,15 +29,14 @@ def safety_check_args(args_dict):
             usage()
             exit(-1)
         else:
-            good_instance = isinstance(args_dict[arg_mandatory[0]], arg_mandatory[1])
-
-            if not good_instance:
+            try:
+                trial = int(args_dict[arg_mandatory[0]])
+            except Exception as e:
                 print_msg(f"Argument --{arg_mandatory[0]} could not be parsed. Please follow the format.", verbose=True)
+                print_msg("---Error Follows---", verbose=True)
+                print_msg(f"{e.__str__()}", verbose=True)
                 usage()
                 exit(-1)
-
-
-
 
 def main(args):
     # Safety check
