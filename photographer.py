@@ -1,8 +1,18 @@
+from multiprocessing import Process
 import time
 import picamera
 import os
 import sys
 import tools
+
+# Project libraries
+import PhotoInfo
+import photo_analyzer
+
+
+def print_msg(msg, verbose):
+    if verbose:
+        print(msg)
 
 
 def usage():
@@ -12,11 +22,6 @@ def usage():
            "/home/pi/photos_example" \
            "\n\t-> photographer.py --time 10 --freq 2 --output /home/pi/photos_example" \
            "\n"
-
-
-def print_msg(msg, verbose):
-    if verbose:
-        print(msg)
 
 
 def safety_check_args(args_dict):
@@ -37,6 +42,31 @@ def safety_check_args(args_dict):
                 print_msg(f"{e.__str__()}", verbose=True)
                 usage()
                 exit(-1)
+
+
+def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=False, output=None):
+    # Call function
+    has_marker = photo_analyzer.photo_analyzer(filename=filename, id_wanted=id_wanted, show=show, output=output)
+
+    jobs_return_dict[proc_num] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
+
+
+def worker_check_triggers(jobs_return_dict, threshold, escape, verbose):
+    # Counter of triggers
+    counter = 0
+
+    if not escape:
+        for proc_id in jobs_return_dict:
+            has_marker = jobs_return_dict[proc_id].get_has_marker()
+
+            if has_marker == True:
+                counter += 1
+
+            if counter >= threshold:
+                if verbose:
+                    print_msg(f"Marker detected '{counter}' times!", verbose)
+                escape = True
+                break
 
 
 def main(args):
@@ -72,12 +102,43 @@ def main(args):
         if verbose:
             print_msg(f"Successfully created output directory: {output}", verbose)
 
+    # Append here the processes
+    jobs = []
+    jobs_return_dict = {}
+    escape = False
+
     with picamera.PiCamera() as camera:
         camera.start_preview()
         try:
             for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:02d}.jpg'))):
+                # Print message
                 print_msg(filename, verbose)
+
+                # Build arguments
+                job1_args = (i, jobs_return_dict, filename, 7, False, filename.replace('.jpg', '-Analyzed.jpg'))
+
+                # Launch process to evaluate image
+                p1 = Process(target=worker_photo_analyzer, args=job1_args)
+
+                # Append job
+                jobs.append(p1)
+
+                # Start job
+                p1.start()
+
+                # Every 5 photos check if we are done
+                if i % 5 == 0:
+                    job2_args = (jobs_return_dict, 5, escape, verbose)
+                    p2 = Process(target=worker_check_triggers, args=job2_args)
+                    p2.start()
+
+                    if escape:
+                        break
+
+                # Time to sleep
                 time.sleep(time_wait)
+
+                # Finish loop
                 if i == it_max:
                     break
         finally:
