@@ -35,7 +35,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
 
     if show or output is not None:
         plt.figure()
-        plt.imshow(frame_markers, origin="upper")
+        # plt.imshow(frame_markers, origin="upper")
         if markerIds is not None:
             for i in range(len(markerIds)):
                 c = markerCorners[i][0]
