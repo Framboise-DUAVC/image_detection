@@ -44,11 +44,13 @@ def safety_check_args(args_dict):
                 exit(-1)
 
 
-def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=False, output=None):
+def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=False, output=None, verbose=True):
     # Call function
     has_marker = photo_analyzer.photo_analyzer(filename=filename, id_wanted=id_wanted, show=show, output=output)
 
     jobs_return_dict[proc_num] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
+
+    print_msg(f"-> Process number: {proc_num} with filename {filename} detected the marker: {has_marker}", verbose)
 
 
 def worker_check_triggers(jobs_return_dict, threshold, escape, verbose):
@@ -92,6 +94,7 @@ def main(args):
     time_secs = int(args_dict["time"])
     freq_phot = int(args_dict["freq"])
     output = args_dict["output"] if "output" in args_dict else "/home/pi/captures/"
+    show = args_dict["show"] if "show" in args_dict else False
 
     # Compute total iterations
     it_max = int(freq_phot * time_secs) - 1
@@ -115,7 +118,7 @@ def main(args):
                 print_msg(filename, verbose)
 
                 # Build arguments
-                job1_args = (i, jobs_return_dict, filename, 7, False, filename.replace('.jpg', '-Analyzed.jpg'))
+                job1_args = (i, jobs_return_dict, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
                 # Launch process to evaluate image
                 p1 = Process(target=worker_photo_analyzer, args=job1_args)
@@ -133,6 +136,7 @@ def main(args):
                     p2.start()
 
                     if escape:
+                        print_msg("Marker detected! Exiting the loop!", verbose)
                         break
 
                 # Time to sleep
