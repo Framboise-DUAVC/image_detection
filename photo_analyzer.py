@@ -19,6 +19,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
         cv2.imshow('Grayscale', gray_image)
         cv2.waitKey(0)
         # Window shown waits for any key pressing event
+        # Window shown waits for any key pressing event
         cv2.destroyAllWindows()
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
