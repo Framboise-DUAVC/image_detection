@@ -53,22 +53,21 @@ def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=
     print_msg(f"-> Process number: {proc_num} with filename {filename} detected the marker: {has_marker}", verbose)
 
 
-def worker_check_triggers(jobs_return_dict, threshold, escape, verbose):
+def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose):
     # Counter of triggers
     counter = 0
 
     if not escape:
-        for proc_id in jobs_return_dict:
-            has_marker = jobs_return_dict[proc_id].get_has_marker()
+        has_marker = jobs_return_dict_last_obj.get_has_marker()
 
-            if has_marker == True:
-                counter += 1
+        if has_marker:
+            counter += 1
 
-            if counter >= threshold:
-                if verbose:
-                    print_msg(f"Marker detected '{counter}' times!", verbose)
-                escape = True
-                break
+        if counter >= threshold:
+            if verbose:
+                print_msg(f"Marker detected '{counter}' times!", verbose)
+            escape = True
+
 
 
 def main(args):
@@ -130,14 +129,13 @@ def main(args):
                 p1.start()
 
                 # Every 5 photos check if we are done
-                if i % 5 == 0:
-                    job2_args = (jobs_return_dict, 5, escape, verbose)
-                    p2 = Process(target=worker_check_triggers, args=job2_args)
-                    p2.start()
+                # job2_args = (jobs_return_dict[i], 5, escape, verbose)
+                # p2 = Process(target=worker_check_triggers, args=job2_args)
+                # p2.start()
 
-                    if escape:
-                        print_msg("Marker detected! Exiting the loop!", verbose)
-                        break
+                # if escape:
+                #     print_msg("Marker detected! Exiting the loop!", verbose)
+                #     break
 
                 # Time to sleep
                 time.sleep(time_wait)
