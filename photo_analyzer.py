@@ -22,7 +22,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
         cv2.destroyAllWindows()
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
-    parameters = cv2.aruco.getDetectorParameters()
+    parameters = cv2.aruco.getDetectorParameters_create()
     detector = cv2.aruco.ArucoDetector(dictionary, parameters)
 
     markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(gray_image)
