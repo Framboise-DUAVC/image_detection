@@ -29,9 +29,10 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
     markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(gray_image, dictionary, parameters=parameters)
     # frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
 
-    for id in markerIds:
-        if id == id_wanted:
-            trigger = True
+    if markerIds is not None:
+        for id in markerIds:
+            if id == id_wanted:
+                trigger = True
 
     if show or output is not None:
         # plt.figure()
