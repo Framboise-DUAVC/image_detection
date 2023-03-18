@@ -167,10 +167,10 @@ def main(args):
         csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time", "Date"])
 
         for proc_num_job in jobs_return_dict:
-            proc_filename = jobs_return_dict[proc_num_job]["info"].get_filename()
-            has_marker = jobs_return_dict[proc_num_job]["info"].get_has_marker()
-            elapsed_time = jobs_return_dict[proc_num_job]["time"]
-            date_time = jobs_return_dict[proc_num_job]["date"]
+            proc_filename = str(jobs_return_dict[proc_num_job]["info"].get_filename())
+            has_marker = str(jobs_return_dict[proc_num_job]["info"].get_has_marker())
+            elapsed_time = str(jobs_return_dict[proc_num_job]["time"])
+            date_time = str(jobs_return_dict[proc_num_job]["date"])
             csvwriter.writerow([proc_num_job, proc_filename, has_marker, elapsed_time, date_time])
 
     print_msg("All done!", verbose)
