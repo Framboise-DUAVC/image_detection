@@ -46,7 +46,7 @@ def safety_check_args(args_dict):
                 exit(-1)
 
 
-def worker_photo_analyzer(proc_num, filename, id_wanted, show=False, output=None, verbose=True) -> dict:
+def worker_photo_analyzer(proc_num, filename, id_wanted, queue, show=False, output=None, verbose=True) -> dict:
     # Start time
     start = time.time()
 
@@ -60,6 +60,7 @@ def worker_photo_analyzer(proc_num, filename, id_wanted, show=False, output=None
     elapsed = time.time() - start
 
     # Save stuff
+    result_dict["id"] = proc_num
     result_dict["info"] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
     result_dict["time"] = elapsed
     result_dict["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -67,8 +68,8 @@ def worker_photo_analyzer(proc_num, filename, id_wanted, show=False, output=None
     # Print info
     print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
 
-    # return value
-    return result_dict
+    # Insert to the queue
+    queue.put(result_dict)
 
 
 def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose):
@@ -122,13 +123,11 @@ def main(args):
             print_msg(f"Successfully created output directory: {output}", verbose)
 
     # Multiprocesser manager
-    manager = multiprocessing.Manager()
-    return_dict = manager.dict()
+    return_queue = multiprocessing.Queue()
 
     # Append here the processes
     jobs = []
     jobs_return_dict = {}
-    escape = False
 
     # Print info
     print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
@@ -173,12 +172,14 @@ def main(args):
 
         csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time", "Date"])
 
-        for proc_num_job in return_dict.values():
-            proc_filename = str(jobs_return_dict[proc_num_job]["info"].get_filename())
-            has_marker = str(jobs_return_dict[proc_num_job]["info"].get_has_marker())
-            elapsed_time = str(jobs_return_dict[proc_num_job]["time"])
-            date_time = str(jobs_return_dict[proc_num_job]["date"])
-            row2write = [proc_num_job, proc_filename, has_marker, elapsed_time, date_time]
+        for q in return_queue.queue:
+            res_dict = q.get()
+            proc_id = res_dict["id"]
+            proc_filename = res_dict["info"].get_filename()
+            has_marker = res_dict["info"].get_has_marker()
+            elapsed_time = res_dict["time"]
+            date_time = res_dict["date"]
+            row2write = [proc_id, proc_filename, has_marker, elapsed_time, date_time]
             csvwriter.writerow(row2write)
 
     print_msg("All done!", verbose)
