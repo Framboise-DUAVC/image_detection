@@ -142,6 +142,8 @@ def main(args):
                 # Start job
                 p1.start()
 
+                print(jobs_return_dict)
+
                 # Every 5 photos check if we are done
                 # job2_args = (jobs_return_dict[i], 5, escape, verbose)
                 # p2 = Process(target=worker_check_triggers, args=job2_args)
