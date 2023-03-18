@@ -66,4 +66,4 @@ OUTPUT_TAR="$OUTPUT".tar.gz
 tar czvf "$OUTPUT_TAR" "$OUTPUT"
 
 # Send it to
-scp "$RECEIVER":"$OUTPUT_TAR" ~/Downloads/
+scp "$OUTPUT_TAR" "$RECEIVER":~/Downloads/
