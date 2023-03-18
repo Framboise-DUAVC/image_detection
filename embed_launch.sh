@@ -46,9 +46,9 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 PYTHON_SCRIPT="photographer.py"
 TIME=20
 FREQ=5
-if ! [ -z "$ARG_FREQ" ]
+if ! [ -z "$FREQ_ARG" ]
 then
-  FREQ="$ARG_FREQ"
+  FREQ="$FREQ_ARG"
 fi
 VERBOSE=True
 
