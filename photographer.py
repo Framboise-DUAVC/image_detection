@@ -127,9 +127,6 @@ def main(args):
         camera.start_preview()
         try:
             for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:02d}.jpg'))):
-                # Print message
-                print_msg(filename, verbose)
-
                 # Build arguments
                 job1_args = (i, jobs_return_dict, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
