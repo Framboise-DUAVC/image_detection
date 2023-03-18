@@ -118,7 +118,7 @@ def main(args):
     escape = False
 
     # Print info
-    print_msg(f"Proc. num. | {filename} | {has_marker} | {elapsed}", verbose)
+    print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
 
     with picamera.PiCamera() as camera:
         camera.start_preview()
