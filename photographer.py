@@ -161,7 +161,7 @@ def main(args):
             camera.stop_preview()
 
     # Print csv file in output folder
-    with open(os.path.join(output, "summary.csv", "w")) as fcsv:
+    with open(os.path.join(output, "summary.csv"), "w") as fcsv:
         csvwriter = csv.writer(fcsv)
 
         csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time", "Date"])
