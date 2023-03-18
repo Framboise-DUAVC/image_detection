@@ -1,6 +1,7 @@
 import csv
 from multiprocessing import Process
 import time
+import datetime
 import picamera
 import os
 import sys
@@ -61,6 +62,7 @@ def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=
     elapsed = time.time() - start
 
     jobs_return_dict[proc_num]["time"] = elapsed
+    jobs_return_dict[proc_num]["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Print info
     print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
