@@ -52,10 +52,10 @@ echo "VERBOSE         = ${VERBOSE}"
 # Call python file
 if [ -z "$OUTPUT" ]
 then
+      printf "%s" "$usage"
+else
       echo "Launching script..."
       python3 "${PYTHON_SCRIPT}" --time "${TIME}" --freq "${FREQ}" --output "${OUTPUT}" --verbose "${VERBOSE}"
-else
-      printf "%s" "$usage"
 fi
 
 # Get the output name for the tar
