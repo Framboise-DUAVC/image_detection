@@ -64,6 +64,7 @@ def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=
     # Print info
     print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
 
+
 def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose):
     # Counter of triggers
     counter = 0
@@ -78,7 +79,6 @@ def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose)
             if verbose:
                 print_msg(f"Marker detected '{counter}' times!", verbose)
             escape = True
-
 
 
 def main(args):
