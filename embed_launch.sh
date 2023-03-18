@@ -48,7 +48,12 @@ echo "OUTPUT          = ${OUTPUT}"
 echo "TIME            = ${TIME}"
 echo "FREQUENCY       = ${FREQ}"
 echo "VERBOSE         = ${VERBOSE}"
-echo "SENDING TO..    = ${RECEIVER}"
+if [ -z "$RECEIVER" ]
+then
+  echo "NOT SENDING RESULTS."
+else
+  echo "SENDING TO..    = ${RECEIVER}"
+fi
 
 # Call python file
 if [ -z "$OUTPUT" ]
@@ -66,4 +71,7 @@ OUTPUT_TAR="$OUTPUT".tar.gz
 tar czvf "$OUTPUT_TAR" "$OUTPUT"
 
 # Send it to
-scp "$OUTPUT_TAR" "$RECEIVER":~/Downloads/
+if ! [ -z "$RECEIVER" ]
+then
+  echo "SENDING TO..    = ${RECEIVER}"
+fi
