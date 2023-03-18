@@ -121,9 +121,6 @@ def main(args):
         if verbose:
             print_msg(f"Successfully created output directory: {output}", verbose)
 
-    # Multiprocesser manager
-    return_queue = multiprocessing.Queue()
-
     # Append here the processes
     jobs_return_dict = {}
 
@@ -134,12 +131,18 @@ def main(args):
         camera.start_preview()
         try:
             for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:02d}.jpg'))):
+                photo_id = i + 1
                 # Build arguments
-                job1_args = (i, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+                job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
                 # Launch process to evaluate image
-                jobs_return_dict[i] = worker_photo_analyzer(*job1_args)
+                jobs_return_dict[photo_id] = worker_photo_analyzer(*job1_args)
 
+                # Ellapsed time for processing
+                elapsed = jobs_return_dict[photo_id]["time"]
+
+                # Do we have to wait?
+                should_wait = time_wait - elapsed > 0
                 # Append job
                 # jobs.append(p1)
 
@@ -156,7 +159,8 @@ def main(args):
                 #     break
 
                 # Time to sleep
-                time.sleep(time_wait)
+                if should_wait:
+                    time.sleep(time_wait - elapsed)
 
                 # Finish loop
                 if i == it_max:
