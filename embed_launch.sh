@@ -74,4 +74,5 @@ tar czvf "$OUTPUT_TAR" "$OUTPUT"
 if ! [ -z "$RECEIVER" ]
 then
   echo "SENDING TO..    = ${RECEIVER}"
+  scp "$OUTPUT_TAR" "$RECEIVER":~/Downloads/
 fi
