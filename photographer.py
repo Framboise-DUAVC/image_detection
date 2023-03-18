@@ -1,3 +1,4 @@
+import csv
 from multiprocessing import Process
 import time
 import picamera
@@ -156,6 +157,18 @@ def main(args):
                     break
         finally:
             camera.stop_preview()
+
+    # Print csv file in output folder
+    with open(os.path.join(output, "summary.csv", "w")) as fcsv:
+        csvwriter = csv.writer(fcsv)
+
+        csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time"])
+
+        for proc_num_job in jobs_return_dict:
+            proc_filename = jobs_return_dict[proc_num_job]["info"].get_filename()
+            has_marker = jobs_return_dict[proc_num_job]["info"].get_has_marker()
+            elapsed_time = jobs_return_dict[proc_num_job]["time"]
+            csvwriter.writerow([proc_num_job, proc_filename, has_marker, elapsed_time])
 
     print_msg("All done!", verbose)
 
