@@ -1,5 +1,5 @@
 import csv
-from multiprocessing import Process
+import multiprocessing
 import time
 import datetime
 import picamera
@@ -46,26 +46,29 @@ def safety_check_args(args_dict):
                 exit(-1)
 
 
-def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=False, output=None, verbose=True):
+def worker_photo_analyzer(proc_num, filename, id_wanted, show=False, output=None, verbose=True) -> dict:
     # Start time
     start = time.time()
 
     # Set as an empty dictionary
-    jobs_return_dict[proc_num] = {}
+    result_dict = {}
 
     # Call function
     has_marker = photo_analyzer.photo_analyzer(filename=filename, id_wanted=id_wanted, show=show, output=output)
 
-    jobs_return_dict[proc_num]["info"] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
-
     # End time
     elapsed = time.time() - start
 
-    jobs_return_dict[proc_num]["time"] = elapsed
-    jobs_return_dict[proc_num]["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # Save stuff
+    result_dict["info"] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
+    result_dict["time"] = elapsed
+    result_dict["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Print info
     print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
+
+    # return value
+    return result_dict
 
 
 def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose):
@@ -118,6 +121,10 @@ def main(args):
         if verbose:
             print_msg(f"Successfully created output directory: {output}", verbose)
 
+    # Multiprocesser manager
+    manager = multiprocessing.Manager()
+    return_dict = manager.dict()
+
     # Append here the processes
     jobs = []
     jobs_return_dict = {}
@@ -131,18 +138,16 @@ def main(args):
         try:
             for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:02d}.jpg'))):
                 # Build arguments
-                job1_args = (i, jobs_return_dict, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+                job1_args = (i, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
                 # Launch process to evaluate image
-                p1 = Process(target=worker_photo_analyzer, args=job1_args)
+                p1 = multiprocessing.Process(target=worker_photo_analyzer, args=job1_args)
 
                 # Append job
                 jobs.append(p1)
 
                 # Start job
                 p1.start()
-
-                print(jobs_return_dict)
 
                 # Every 5 photos check if we are done
                 # job2_args = (jobs_return_dict[i], 5, escape, verbose)
@@ -168,13 +173,12 @@ def main(args):
 
         csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time", "Date"])
 
-        for proc_num_job in jobs_return_dict:
+        for proc_num_job in return_dict.values():
             proc_filename = str(jobs_return_dict[proc_num_job]["info"].get_filename())
             has_marker = str(jobs_return_dict[proc_num_job]["info"].get_has_marker())
             elapsed_time = str(jobs_return_dict[proc_num_job]["time"])
             date_time = str(jobs_return_dict[proc_num_job]["date"])
             row2write = [proc_num_job, proc_filename, has_marker, elapsed_time, date_time]
-            print(row2write)
             csvwriter.writerow(row2write)
 
     print_msg("All done!", verbose)
