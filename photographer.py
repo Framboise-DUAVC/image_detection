@@ -130,7 +130,7 @@ def main(args):
     with picamera.PiCamera() as camera:
         camera.start_preview()
         try:
-            for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:02d}.jpg'))):
+            for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:09d}.jpg'))):
                 photo_id = i + 1
                 # Build arguments
                 job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
