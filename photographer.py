@@ -171,7 +171,9 @@ def main(args):
             has_marker = str(jobs_return_dict[proc_num_job]["info"].get_has_marker())
             elapsed_time = str(jobs_return_dict[proc_num_job]["time"])
             date_time = str(jobs_return_dict[proc_num_job]["date"])
-            csvwriter.writerow([proc_num_job, proc_filename, has_marker, elapsed_time, date_time])
+            row2write = [proc_num_job, proc_filename, has_marker, elapsed_time, date_time]
+            print(row2write)
+            csvwriter.writerow(row2write)
 
     print_msg("All done!", verbose)
 
