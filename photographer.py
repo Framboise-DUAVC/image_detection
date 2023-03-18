@@ -137,7 +137,7 @@ def main(args):
         try:
             for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'image_{counter:02d}.jpg'))):
                 # Build arguments
-                job1_args = (i, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+                job1_args = (i, filename, 7, show, return_queue, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
                 # Launch process to evaluate image
                 p1 = multiprocessing.Process(target=worker_photo_analyzer, args=job1_args)
