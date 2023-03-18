@@ -48,10 +48,13 @@ def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=
     # Start time
     start = time.time()
 
+    # Set as an empty dictionary
+    jobs_return_dict[proc_num] = {}
+
     # Call function
     has_marker = photo_analyzer.photo_analyzer(filename=filename, id_wanted=id_wanted, show=show, output=output)
 
-    jobs_return_dict[proc_num] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
+    jobs_return_dict[proc_num]["info"] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
 
     # End time
     elapsed = time.time() - start
