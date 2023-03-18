@@ -20,6 +20,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    -f|--freq)
+      FREQ_ARG="$2"
+      shift # past argument
+      shift # past value
+      ;;
     --default)
       DEFAULT=YES
       shift # past argument
@@ -41,6 +46,10 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 PYTHON_SCRIPT="photographer.py"
 TIME=20
 FREQ=5
+if ! [ -z "$FREQ" ]
+then
+  FREQ=FREQ_ARG
+fi
 VERBOSE=True
 
 echo "PYTHON_SCRIPT   = ${PYTHON_SCRIPT}"
