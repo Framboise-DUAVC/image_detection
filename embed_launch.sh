@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage
-usage="usage:\n bash embed_launch.sh --output <filename>"
+usage="bash embed_launch.sh --output <filename>"
 
 
 # Positional arguments
@@ -52,7 +52,7 @@ echo "VERBOSE         = ${VERBOSE}"
 # Call python file
 if [ -z "$OUTPUT" ]
 then
-      printf "%s" "$usage"
+      printf "Usage: \n%s\n" "$usage"
 else
       echo "Launching script..."
       python3 "${PYTHON_SCRIPT}" --time "${TIME}" --freq "${FREQ}" --output "${OUTPUT}" --verbose "${VERBOSE}"
