@@ -45,26 +45,21 @@ def safety_check_args(args_dict):
 
 
 def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=False, output=None, verbose=True):
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
-    #vs code is best
+    # Start time
+    start = time.time()
+
     # Call function
     has_marker = photo_analyzer.photo_analyzer(filename=filename, id_wanted=id_wanted, show=show, output=output)
 
     jobs_return_dict[proc_num] = PhotoInfo.PhotoInfo(filename=filename, has_marker=has_marker)
 
-    print_msg(f"-> Process number: {proc_num} with filename {filename} detected the marker: {has_marker}", verbose)
+    # End time
+    elapsed = time.time() - start
 
+    jobs_return_dict[proc_num]["time"] = elapsed
+
+    # Print info
+    print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
 
 def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose):
     # Counter of triggers
@@ -121,6 +116,9 @@ def main(args):
     jobs = []
     jobs_return_dict = {}
     escape = False
+
+    # Print info
+    print_msg(f"Proc. num. | {filename} | {has_marker} | {elapsed}", verbose)
 
     with picamera.PiCamera() as camera:
         camera.start_preview()
