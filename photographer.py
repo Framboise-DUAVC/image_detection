@@ -164,13 +164,14 @@ def main(args):
     with open(os.path.join(output, "summary.csv", "w")) as fcsv:
         csvwriter = csv.writer(fcsv)
 
-        csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time"])
+        csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time", "Date"])
 
         for proc_num_job in jobs_return_dict:
             proc_filename = jobs_return_dict[proc_num_job]["info"].get_filename()
             has_marker = jobs_return_dict[proc_num_job]["info"].get_has_marker()
             elapsed_time = jobs_return_dict[proc_num_job]["time"]
-            csvwriter.writerow([proc_num_job, proc_filename, has_marker, elapsed_time])
+            date_time = jobs_return_dict[proc_num_job]["date"]
+            csvwriter.writerow([proc_num_job, proc_filename, has_marker, elapsed_time, date_time])
 
     print_msg("All done!", verbose)
 
