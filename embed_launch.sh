@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage
-usage="bash embed_launch.sh --output <filename>"
+usage="bash embed_launch.sh --output <filename> --receiver"
 
 
 # Positional arguments
@@ -15,8 +15,8 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -s|--searchpath)
-      SEARCHPATH="$2"
+    -r|--receiver)
+      RECEIVER="$2"
       shift # past argument
       shift # past value
       ;;
@@ -48,6 +48,7 @@ echo "OUTPUT          = ${OUTPUT}"
 echo "TIME            = ${TIME}"
 echo "FREQUENCY       = ${FREQ}"
 echo "VERBOSE         = ${VERBOSE}"
+echo "SENDING TO..    = ${RECEIVER}"
 
 # Call python file
 if [ -z "$OUTPUT" ]
@@ -63,3 +64,6 @@ OUTPUT_TAR="$OUTPUT".tar.gz
 
 # Tar the file
 tar czvf "$OUTPUT_TAR" "$OUTPUT"
+
+# Send it to
+scp "$RECEIVER":"$OUTPUT_TAR" ~/Downloads/
