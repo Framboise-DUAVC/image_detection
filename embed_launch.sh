@@ -48,7 +48,7 @@ TIME=20
 FREQ=5
 if ! [ -z "$FREQ" ]
 then
-  FREQ=FREQ_ARG
+  FREQ="$FREQ"
 fi
 VERBOSE=True
 
