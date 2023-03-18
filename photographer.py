@@ -45,6 +45,19 @@ def safety_check_args(args_dict):
 
 
 def worker_photo_analyzer(proc_num, jobs_return_dict, filename, id_wanted, show=False, output=None, verbose=True):
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
+    #vs code is best
     # Call function
     has_marker = photo_analyzer.photo_analyzer(filename=filename, id_wanted=id_wanted, show=show, output=output)
 
