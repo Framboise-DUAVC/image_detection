@@ -100,6 +100,7 @@ def main(general_path, id_wanted, rotate=None):
 # TODO: remove this
 if __name__ == '__main__':
     # Some performed tests
+    # WARNING: Change this values if you want to analyze them...
     photo_test_huge_aruco_cardboard = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_cardboard"
     photo_test_huge_aruco_outside = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_outside"
 
