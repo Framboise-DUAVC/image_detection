@@ -1,13 +1,19 @@
+import os
+
 import cv2
 import matplotlib.pyplot as plt
 
 
-def photo_analyzer(filename, id_wanted, show=False, output=None):
+def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
     # Local auxiliary variable
     trigger = False
 
     # Load the image
     frame = cv2.imread(filename)
+
+    # Rotate if desired
+    if rotate is not None:
+        frame = cv2.rotate(frame, rotate)
 
     if show:
         cv2.imshow('Original', frame)
@@ -38,7 +44,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
                 trigger = True
 
     if show or output is not None:
-        plt.figure()
+        plt.figure(figsize=(16, 9) if (rotate is None) or (rotate == cv2.ROTATE_180) else (9, 16))
         plt.imshow(frame_markers, origin="upper")
         if markerIds is not None:
             for i in range(len(markerIds)):
@@ -57,7 +63,48 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
     return trigger
 
 
+def archive_analyzer(archive, id_wanted, rotate=None):
+    # Get all the files within this archive
+    filenames = os.listdir(archive)
+
+    # Build output dir
+    output_dir = os.path.join(archive, "analyzed")
+
+    # Check if exist
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+
+    # Get filepaths
+    for filename in filenames:
+
+        # Check if it is an image
+        if filename.endswith(".jpg"):
+            # Join path
+            filepath = os.path.join(archive, filename)
+
+            # Get output path
+            output = os.path.join(output_dir, filename)
+
+            # Send to analyzer
+            photo_analyzer(filepath, id_wanted, output=output, rotate=rotate)
+
+
+def main(general_path, id_wanted, rotate=None):
+    # Check if dir or file
+    if os.path.isdir(general_path):
+        archive_analyzer(general_path, id_wanted, rotate)
+    elif os.path.isfile(general_path):
+        photo_analyzer(general_path, id_wanted, True)
+
+
 # TODO: remove this
 if __name__ == '__main__':
+    # Some performed tests
+    photo_test_huge_aruco_cardboard = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_cardboard"
+    photo_test_huge_aruco_outside = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_outside"
+
     # Call main function
-    photo_analyzer(filename="/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_cardboard/home/pi/photo_test_huge_aruco_cardboard/raspy_000000008.jpg", id_wanted=7, show=True)
+    main(
+        general_path=photo_test_huge_aruco_outside,
+        id_wanted=7,
+        rotate=cv2.ROTATE_90_CLOCKWISE)
