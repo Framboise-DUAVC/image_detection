@@ -1,3 +1,4 @@
+import asyncio
 import mavsdk
 
 
@@ -21,4 +22,5 @@ async def main():
 
 if __name__ == '__main__':
     # Call main running function
-    main()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
