@@ -1,5 +1,6 @@
-import serial
-ser = serial.Serial('/dev/ttyFAKE1')  # open serial port
+from serial import Serial
+
+ser = Serial('/dev/ttyFAKE1')  # open serial port
 print(ser.name)         # check which port was really used
 ser.write(b'hello')     # write a string
 ser.close()             # close port
