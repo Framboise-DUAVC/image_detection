@@ -1,8 +1,9 @@
 import asyncio
 import mavsdk
-
+import serial
 
 async def main():
+    # ser = serial.Serial('/dev/ttyFAKE0')  # open serial port
     drone = mavsdk.System()
     print("Trying to connect...")
     await drone.connect(system_address="serial:///dev/ttyFAKE0:115200")
