@@ -1,7 +1,7 @@
 import mavsdk
 
 
-def main():
+async def main():
     drone = mavsdk.System()
     await drone.connect(system_address="serial:///dev/FAKE0:115200")
     print("Waiting for drone to connect...")
