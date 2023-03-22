@@ -30,7 +30,7 @@ async def main():
     print("-- Waiting for cruise altitude...")
     async for flight_mode in drone.telemetry.flight_mode():
         print("FlightMode:", str(flight_mode))
-        if str(flight_mode) == 'CRUISE':
+        if str(flight_mode) == 'HOLD':
             print("-- Starting photographer...")
             break
 
