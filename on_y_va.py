@@ -1,6 +1,6 @@
 import asyncio
 import mavsdk
-
+import time
 
 async def main():
     # ser = serial.Serial('/dev/ttyFAKE0')  # open serial port
@@ -34,9 +34,19 @@ async def main():
             print("-- Starting photographer...")
             break
 
+    # Wait for
+    for i in range(20):
+        print(f"- Taking photo n {i}")
+        time.sleep(1)
+
+    # Aruco detected info
+    print(f"-- Aruco id n {7} detected!")
+
+    # Landing
     print("-- Landing")
     await drone.action.land()
 
+    # Status check
     status_text_task.cancel()
 
 
