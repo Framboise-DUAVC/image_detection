@@ -15,13 +15,6 @@ async def main():
             print(f"-- Connected to drone!")
             break
 
-    async for flight_mode in drone.telemetry.flight_mode():
-        print("FlightMode:", str(flight_mode))
-        if str(flight_mode) == 'MANUAL':
-            print("YEEEE HAWWWW")
-            print("I feel the need...the need for speed!")
-            break
-
     print("Waiting for drone to have a global position estimate...")
     async for health in drone.telemetry.health():
         if health.is_global_position_ok and health.is_home_position_ok:
