@@ -1,6 +1,5 @@
 import asyncio
 import mavsdk
-import photographer
 
 
 async def main():
