@@ -42,6 +42,12 @@ async def main():
     # Aruco detected info
     print(f"-- Aruco id n {7} detected!")
 
+    # Trapdoor actuation and payload drop
+    await drone.gimbal.set_pitch_and_yaw(0,90) # args are (float pitch_deg, float yaw_deg)
+    print("-- Trapdoor opening...")
+    time.sleep(3)
+    print("-- Payload dropped!")
+
     # Landing
     print("-- Landing")
     await drone.action.land()
