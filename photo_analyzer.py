@@ -24,6 +24,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
         
         cv2.destroyAllWindows()
 #imessed up the commit
+    # imessed up the commit
     dictionary_main = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
     #bits_str = dictionary_main['marker_7']
     #print(bits_str)
