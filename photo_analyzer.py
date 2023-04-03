@@ -23,10 +23,10 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
         # Window shown waits for any key pressing event
         
         cv2.destroyAllWindows()
-#imessed up the commit
+    #imessed up the commit
     # imessed up the commit
     dictionary= cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
-    
+    cv.aruco.Dictionary.readDictionary(fn)
     #bits_str = dictionary_main['marker_7']
     #print(bits_str)
     #fs = cv2.FileStorage("/home/pi/dictionary.txt")
