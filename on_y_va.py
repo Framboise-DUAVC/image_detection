@@ -6,7 +6,7 @@ async def main():
     # ser = serial.Serial('/dev/ttyFAKE0')  # open serial port
     drone = mavsdk.System()
     print("Trying to connect...")
-    await drone.connect(system_address="serial://dev/serial0:57600")
+    await drone.connect(system_address="serial:///dev/serial0:57600")
     status_text_task = asyncio.ensure_future(print_status_text(drone))
     print("Waiting for drone to connect...")
 
