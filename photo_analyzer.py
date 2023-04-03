@@ -26,9 +26,9 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
     parameters = cv2.aruco.DetectorParameters_create()
-    cv2.aruco.Dictionary_readDictionary(INT, dictionary)
+    #cv2.aruco.Dictionary_readDictionary(1, dictionary)
     # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
-
+    print(dictionary)
     markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(gray_image, dictionary, parameters=parameters)
     # frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
 
