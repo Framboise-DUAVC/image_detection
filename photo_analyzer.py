@@ -23,19 +23,10 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
         # Window shown waits for any key pressing event
         
         cv2.destroyAllWindows()
-    #imessed up the commit
-    # imessed up the commit
-    dictionary= cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
-    cv.aruco.Dictionary.readDictionary(fn)
-    #bits_str = dictionary_main['marker_7']
-    #print(bits_str)
-    #fs = cv2.FileStorage("/home/pi/dictionary.txt")
-    #dict_str = dictionary_main.writeDictionary(fs)
-    #a = []
-    #a = cv2.aruco.Dictionary.readDictionary(fn)
-    #print(a)
 
-    detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+    dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
+    parameters = cv2.aruco.DetectorParameters_create()
+    # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
 
     markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(gray_image, dictionary, parameters=parameters)
     # frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
