@@ -26,10 +26,12 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
 #imessed up the commit
     # imessed up the commit
     dictionary_main = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+    
     #bits_str = dictionary_main['marker_7']
     #print(bits_str)
-    fs = cv2.FileStorage("/home/pi/dictionary.txt")
-    dict_str = dictionary_main.writeDictionary(fs)
+    #fs = cv2.FileStorage("/home/pi/dictionary.txt")
+    #dict_str = dictionary_main.writeDictionary(fs)
+    cv2.aruco.Dictionary.readDictionary(fn)
 
     # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
 
