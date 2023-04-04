@@ -16,38 +16,67 @@ async def main():
 
     # Ensure we have future package
     status_text_task = asyncio.ensure_future(print_status_text(drone))
-    print(status_text_task)
+
+    # Info...
     print("Waiting for drone to connect...")
 
+    # Get connection state
     async for state in drone.core.connection_state():
         if state.is_connected:
+
+            # Info if connected
             print(f"-- Connected to drone!")
+
+            # Show banner
             print(banners.get_px4_banner())
+
+            # Exit async
             break
 
+    # Info
     print("Waiting for drone to have a global position estimate...")
+
+    # Check GPS
     async for health in drone.telemetry.health():
         if health.is_global_position_ok and health.is_home_position_ok:
+
+            # Info
             print("-- Global position estimate OK")
+
+            # Exit async
             break
 
+    # Info...
     print("-- Arming")
+
+    # Arm
     await drone.action.arm()
 
+    # Info
     print("-- Taking off")
+
+    # Take off
     await drone.action.takeoff()
 
+    # Info
     print("-- Waiting for cruise altitude...")
-    async for flight_mode in drone.telemetry.flight_mode():
-        print(f"-- FlightMode: {str(flight_mode)}")
-        if str(flight_mode).strip().lower() == "hold":
-            print("-- Starting photographer...")
-            break
 
-    # Wait for
-    for i in range(20):
-        print(f"- Taking photo n {i}")
-        time.sleep(1)
+    # Get the flight mode
+    async for flight_mode in drone.telemetry.flight_mode():
+
+        # Display flight mode
+        print(f"-- FlightMode: {str(flight_mode)}")
+
+        # TODO: Change here what the mode will be when starting to do photos
+        if str(flight_mode).strip().lower() == "hold":
+
+            # Show info
+            print("-- Starting photographer...")
+
+            # TODO: Call the photographer here
+
+
+            break
 
     # Aruco detected info
     print(f"-- Aruco id n {7} detected!")
