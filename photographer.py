@@ -118,8 +118,7 @@ def main(args):
 
     if not os.path.exists(output):
         os.mkdir(output)
-        if verbose:
-            print_msg(f"Successfully created output directory: {output}", verbose)
+        print_msg(f"Successfully created output directory: {output}", verbose)
 
     # Append here the processes
     jobs_return_dict = {}
@@ -182,7 +181,7 @@ def main(args):
             row2write = [job_id, proc_filename, has_marker, elapsed_time, date_time]
             csvwriter.writerow(row2write)
 
-    print_msg("All done!", verbose)
+    print_msg("All done!", verbose=verbose)
 
 
 if __name__ == '__main__':

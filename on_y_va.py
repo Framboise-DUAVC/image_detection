@@ -4,11 +4,19 @@ import time
 import banners
 
 async def main():
-    # ser = serial.Serial('/dev/ttyFAKE0')  # open serial port
+
+    # Get drone object and then try to connect
     drone = mavsdk.System()
+
+    # Show info
     print("Trying to connect...")
+
+    # Drone is in serial0
     await drone.connect(system_address="serial:///dev/serial0:921600")
+
+    # Ensure we have future package
     status_text_task = asyncio.ensure_future(print_status_text(drone))
+    print(status_text_task)
     print("Waiting for drone to connect...")
 
     async for state in drone.core.connection_state():
