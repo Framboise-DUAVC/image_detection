@@ -1,6 +1,7 @@
 import asyncio
 import mavsdk
 import time
+import banners
 
 async def main():
     # ser = serial.Serial('/dev/ttyFAKE0')  # open serial port
@@ -13,6 +14,7 @@ async def main():
     async for state in drone.core.connection_state():
         if state.is_connected:
             print(f"-- Connected to drone!")
+            print(banners.get_px4_banner())
             break
 
     print("Waiting for drone to have a global position estimate...")
@@ -43,7 +45,7 @@ async def main():
     print(f"-- Aruco id n {7} detected!")
 
     # Trapdoor actuation and payload drop
-    await drone.gimbal.set_pitch_and_yaw(0,90) # args are (float pitch_deg, float yaw_deg)
+    await drone.gimbal.set_pitch_and_yaw(0, 90)  # args are (float pitch_deg, float yaw_deg)
     print("-- Trapdoor opening...")
     time.sleep(3)
     print("-- Payload dropped!")
