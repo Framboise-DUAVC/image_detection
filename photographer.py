@@ -155,15 +155,15 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
     print_msg("Starting continuous capture...", verbose)
     with PiCamera() as camera:
         camera.start_preview()
-        camera.resolution = (640, 480)
-        camera.framerate = 32
-        rawCapture = PiRGBArray(camera, size=(640, 480))
+        # camera.resolution = (640, 480)
+        # camera.framerate = 32
+        rawCapture = PiRGBArray(camera, size=(camera.resolution[0], camera.resolution[1]))
         try:
             # capture frames from the camera
             for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
                 # grab the raw NumPy array representing the image, then initialize the timestamp
                 # and occupied/unoccupied text
-                image = np.array(frame.array)
+                image = frame.array
 
                 filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
 
