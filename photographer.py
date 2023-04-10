@@ -163,32 +163,32 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
     print_msg("Starting continuous capture...", verbose)
     with picamera.PiCamera() as camera:
         camera.start_preview()
-    try:
-        for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'raspy_{counter:09d}.jpg'))):
-            # Set photo identifier
-            photo_id = i + 1
+        try:
+            for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'raspy_{counter:09d}.jpg'))):
+                # Set photo identifier
+                photo_id = i + 1
 
-            # Build arguments
-            job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+                # Build arguments
+                job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
-            # Launch process to evaluate image
-            result_dict[photo_id] = worker_photo_analyzer(*job1_args)
+                # Launch process to evaluate image
+                result_dict[photo_id] = worker_photo_analyzer(*job1_args)
 
-            # Ellapsed time for processing
-            elapsed = result_dict[photo_id]["time"]
+                # Ellapsed time for processing
+                elapsed = result_dict[photo_id]["time"]
 
-            # Do we have to wait?
-            should_wait = time_wait - elapsed > 0
+                # Do we have to wait?
+                should_wait = time_wait - elapsed > 0
 
-            # Time to sleep
-            if should_wait:
-                time.sleep(time_wait - elapsed)
+                # Time to sleep
+                if should_wait:
+                    time.sleep(time_wait - elapsed)
 
-            # Finish loop
-            if i == it_max:
-                break
-    finally:
-        camera.stop_preview()
+                # Finish loop
+                if i == it_max:
+                    break
+        finally:
+            camera.stop_preview()
 
 
 if __name__ == '__main__':
