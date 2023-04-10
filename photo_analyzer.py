@@ -1,9 +1,9 @@
 import cv2
 
-#bash embed_launch.sh -o /home/pi/photo_test5 -r username@machine.local
+#bash embed_launch.sh -o /home/pi/photo_test50 -r username@machine.local
 #bash embed_launch.sh -o /home/pi/photo_test50
 
-def photo_analyzer(filename, id_wanted, show=False, output=None):
+def photo_analyzer(filename,     id_wanted, show=False, output=None):
     # Local auxiliary variable
     trigger = False
 
@@ -38,10 +38,10 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
     #dict3 = cv2.aruco.Dictionary_create(0, 4)
     #dicttest.bytesList = marker_m_comp
 
-    dict_custom = cv2.aruco.Dictionary_create(0, 4)
-    m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
-    dict_custom.bytesList = m_bytes[6:7, :, :]
-    dictionary = dict_custom
+    #dict_custom = cv2.aruco.Dictionary_create(0, 4)
+    #m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
+    #dict_custom.bytesList = m_bytes[6:7, :, :]
+    #dictionary = dict_custom
 
     parameters = cv2.aruco.DetectorParameters_create()
 
