@@ -5,12 +5,6 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
     trigger = False
 
-    # Save the image
-    cv2.imwrite(filename, frame)
-
-    # Save the image
-    frame = cv2.imread(filename)
-
     if frame is None:
         frame = cv2.imread(filename)
 
@@ -59,6 +53,9 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
         #    # plt.show()
         #if output is not None:
         #    # plt.savefig(output)
+
+    # Save the image
+    cv2.imwrite(filename, frame)
 
     return trigger
 
