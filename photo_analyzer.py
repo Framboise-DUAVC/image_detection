@@ -25,6 +25,18 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
         cv2.destroyAllWindows()
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
+    #markercompressed = (bytes[0:2, :, :], 7)
+    #bytes[6:7, :, :]
+    #dict_custom = cv2.aruco.Dictionary_create(0, 4)
+    #dictionary = m_bytes[6:7, :, :]
+    #dict = cv2.aruco.Dictionary_getBitsFromByteList(m_bytes[6:7, :, :], 4)
+    #dict3 = cv2.aruco.Dictionary_create(0, 4)
+    #dicttest.bytesList = marker_m_comp
+
+    dict_custom = cv2.aruco.Dictionary_create(0, 4)
+    m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
+    dict_custom.bytesList = m_bytes[6:7, :, :]
+    dictionary = dict_custom
     parameters = cv2.aruco.DetectorParameters_create()
     #cv2.aruco.Dictionary_readDictionary(1, dictionary)
     # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
