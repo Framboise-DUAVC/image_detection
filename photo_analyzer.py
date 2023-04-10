@@ -80,4 +80,4 @@ def photo_analyzer(filename,     id_wanted, show=False, output=None):
 # TODO: remove this
 if __name__ == '__main__':
     # Call main function
-    photo_analyzer(filename="test/aruco_id7_grass.jpeg", id_wanted=1, show=True)
+    photo_analyzer(filename="test/aruco_id7_grass.jpeg", id_wanted=7, show=True)
