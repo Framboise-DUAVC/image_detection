@@ -151,6 +151,7 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
     with picamera.PiCamera() as camera:
         camera.start_preview()
         camera.resolution = (2592, 1944)
+        camera.framerate = 15
         try:
             for i in range(0, it_max):
                 filename = os.path.join(output, 'raspy_{counter:09d}.jpg')
