@@ -163,7 +163,7 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
             for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
                 # grab the raw NumPy array representing the image, then initialize the timestamp
                 # and occupied/unoccupied text
-                image = frame.array
+                image = np.array(frame.array)
 
                 filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
 
