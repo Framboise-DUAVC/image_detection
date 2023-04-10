@@ -188,6 +188,8 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
                 if i == it_max:
                     break
 
+                rawCapture.truncate(0)
+
                 i += 1
 
         finally:
