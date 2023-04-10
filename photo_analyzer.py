@@ -38,15 +38,15 @@ def photo_analyzer(filename,     id_wanted, show=False, output=None):
     #dict3 = cv2.aruco.Dictionary_create(0, 4)
     #dicttest.bytesList = marker_m_comp
 
-    #dict_custom = cv2.aruco.Dictionary_create(0, 4)
-    #m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
-    #dict_custom.bytesList = m_bytes[6:7, :, :]
-    #dictionary = dict_custom
+    dict_custom = cv2.aruco.Dictionary_create(0, 4)
+    m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
+    dict_custom.bytesList = m_bytes[6:7, :, :]
+    dictionary = dict_custom
 
     parameters = cv2.aruco.DetectorParameters_create()
 
     #cv2.aruco.Dictionary_readDictionary(1, dictionary)
-    # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+    #detector = cv2.aruco.ArucoDetector(dictionary, parameters)
     #print(dictionary)
     markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(gray_image, dictionary, parameters=parameters)
     # frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
@@ -79,4 +79,4 @@ def photo_analyzer(filename,     id_wanted, show=False, output=None):
 # TODO: remove this
 if __name__ == '__main__':
     # Call main function
-    photo_analyzer(filename="test/aruco_id7_grass.jpeg", id_wanted=7, show=True)
+    photo_analyzer(filename="test/aruco_id7_grass.jpeg", id_wanted=1, show=True)
