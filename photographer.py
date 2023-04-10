@@ -160,11 +160,14 @@ def capture_video(output):
 
 
 def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=True):
+    print_msg("Starting continuous capture...")
     with picamera.PiCamera() as camera:
         camera.start_preview()
     try:
         for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'raspy_{counter:09d}.jpg'))):
+            # Set photo identifier
             photo_id = i + 1
+
             # Build arguments
             job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
