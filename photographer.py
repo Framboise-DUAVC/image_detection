@@ -153,7 +153,7 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
     i = 0
 
     print_msg("Starting continuous capture...", verbose)
-    with  PiCamera.PiCamera() as camera:
+    with PiCamera() as camera:
         camera.start_preview()
         camera.resolution = (640, 480)
         camera.framerate = 32
