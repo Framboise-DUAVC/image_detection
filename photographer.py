@@ -1,7 +1,8 @@
 import csv
 import time
 import datetime
-import picamera
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import os
 import sys
 import tools
@@ -54,7 +55,8 @@ def worker_photo_analyzer(proc_num, frame, filename, id_wanted, show=False, outp
     result_dict = {}
 
     # Call function
-    has_marker = photo_analyzer.photo_analyzer(frame=frame, filename=filename, id_wanted=id_wanted, show=show, output=output)
+    has_marker = photo_analyzer.photo_analyzer(frame=frame, filename=filename, id_wanted=id_wanted, show=show,
+                                               output=output)
 
     # End time
     elapsed = time.time() - start
@@ -151,11 +153,11 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
     i = 0
 
     print_msg("Starting continuous capture...", verbose)
-    with picamera.PiCamera() as camera:
+    with  PiCamera.PiCamera() as camera:
         camera.start_preview()
         camera.resolution = (640, 480)
         camera.framerate = 32
-        rawCapture = picamera.array.PiRGBArray(camera, size=(640, 480))
+        rawCapture = PiRGBArray(camera, size=(640, 480))
         try:
             # capture frames from the camera
             for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
