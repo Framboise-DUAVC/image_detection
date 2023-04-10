@@ -160,7 +160,7 @@ def capture_video(output):
 
 
 def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=True):
-    print_msg("Starting continuous capture...")
+    print_msg("Starting continuous capture...", verbose)
     with picamera.PiCamera() as camera:
         camera.start_preview()
     try:
