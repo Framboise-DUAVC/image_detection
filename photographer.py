@@ -147,20 +147,25 @@ def main(args):
 
 
 def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=True):
+    # Set counter
+    i = 0
+
     print_msg("Starting continuous capture...", verbose)
     with picamera.PiCamera() as camera:
         camera.start_preview()
-        # camera.resolution = (1920, 1080)
-        # camera.framerate = 15
+        camera.resolution = (640, 480)
+        camera.framerate = 32
+        rawCapture = picamera.array.PiRGBArray(camera, size=(640, 480))
         try:
-            for i in range(0, it_max):
-                filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
-
-                image = np.empty((camera.resolution[1] * camera.resolution[0] * 3,), dtype=np.uint8)
-
-                camera.capture(image, 'bgr')
+            # capture frames from the camera
+            for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+                # grab the raw NumPy array representing the image, then initialize the timestamp
+                # and occupied/unoccupied text
+                image = frame.array
 
                 image = image.reshape((camera.resolution[0], camera.resolution[1], 3))
+
+                filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
 
                 # Build arguments
                 job1_args = (i, image, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
@@ -177,6 +182,11 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
                 # Time to sleep
                 if should_wait:
                     time.sleep(time_wait - elapsed)
+
+                if i == it_max:
+                    break
+
+                i += 1
 
         finally:
             camera.stop_preview()
