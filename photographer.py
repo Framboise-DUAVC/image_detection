@@ -152,7 +152,7 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
         camera.start_preview()
         camera.resolution = (2592, 1944)
         try:
-            for i, filename in range(0, it_max):
+            for i in range(0, it_max):
                 filename = os.path.join(output, 'raspy_{counter:09d}.jpg')
 
                 image = np.empty((2592 * 1944 * 3,), dtype=np.uint8)
