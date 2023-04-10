@@ -142,20 +142,6 @@ def main(args):
 
                 # Do we have to wait?
                 should_wait = time_wait - elapsed > 0
-                # Append job
-                # jobs.append(p1)
-
-                # Start job
-                # p1.start()
-
-                # Every 5 photos check if we are done
-                # job2_args = (jobs_return_dict[i], 5, escape, verbose)
-                # p2 = Process(target=worker_check_triggers, args=job2_args)
-                # p2.start()
-
-                # if escape:
-                #     print_msg("Marker detected! Exiting the loop!", verbose)
-                #     break
 
                 # Time to sleep
                 if should_wait:
