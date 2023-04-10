@@ -150,13 +150,13 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
     print_msg("Starting continuous capture...", verbose)
     with picamera.PiCamera() as camera:
         camera.start_preview()
-        camera.resolution = (1920, 1080)
+        # camera.resolution = (1920, 1080)
         # camera.framerate = 15
         try:
             for i in range(0, it_max):
                 filename = os.path.join(output, 'raspy_{counter:09d}.jpg')
 
-                image = np.empty((1920 * 1080 * 3,), dtype=np.uint8)
+                image = np.empty((camera.resolution[1] * camera.resolution[0] * 3,), dtype=np.uint8)
 
                 camera.capture(image, 'bgr')
 
