@@ -154,7 +154,7 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
         # camera.framerate = 15
         try:
             for i in range(0, it_max):
-                filename = os.path.join(output, 'raspy_{counter:09d}.jpg')
+                filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
 
                 image = np.empty((camera.resolution[1] * camera.resolution[0] * 3,), dtype=np.uint8)
 
