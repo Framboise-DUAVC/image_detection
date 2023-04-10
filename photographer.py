@@ -165,8 +165,6 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
                 # and occupied/unoccupied text
                 image = frame.array
 
-                image = image.reshape((camera.resolution[0], camera.resolution[1], 3))
-
                 filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
 
                 # Build arguments
