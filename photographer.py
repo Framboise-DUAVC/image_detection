@@ -160,6 +160,8 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
 
                 camera.capture(image, 'bgr')
 
+                image = image.reshape((camera.resolution[0], camera.resolution[1], 3))
+
                 # Build arguments
                 job1_args = (i, image, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
