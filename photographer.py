@@ -1,5 +1,5 @@
 import csv
-import multiprocessing
+import cv2
 import time
 import datetime
 import picamera
@@ -126,32 +126,8 @@ def main(args):
     # Print info
     print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
 
-    with picamera.PiCamera() as camera:
-        camera.start_preview()
-        try:
-            for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'raspy_{counter:09d}.jpg'))):
-                photo_id = i + 1
-                # Build arguments
-                job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
-
-                # Launch process to evaluate image
-                jobs_return_dict[photo_id] = worker_photo_analyzer(*job1_args)
-
-                # Ellapsed time for processing
-                elapsed = jobs_return_dict[photo_id]["time"]
-
-                # Do we have to wait?
-                should_wait = time_wait - elapsed > 0
-
-                # Time to sleep
-                if should_wait:
-                    time.sleep(time_wait - elapsed)
-
-                # Finish loop
-                if i == it_max:
-                    break
-        finally:
-            camera.stop_preview()
+    # Here we can either call CAPTURE_CONTINUOUS or TBD: CAPTURE_VIDEO
+    continuous_capture(jobs_return_dict, output, show, time_wait, it_max, verbose)
 
     # Print csv file in output folder
     with open(os.path.join(output, "summary.csv"), "w") as fcsv:
@@ -168,6 +144,48 @@ def main(args):
             csvwriter.writerow(row2write)
 
     print_msg("All done!", verbose=verbose)
+
+
+def capture_video(output):
+    cap = cv2.VideoCapture(0)
+
+    # Capture frame
+    ret, frame = cap.read()
+
+    if ret:
+        filename = os.path.join(output, 'raspy_{counter:09d}.jpg')
+        cv2.imwrite(os.path.join(output, 'raspy_{counter:09d}.jpg'), frame)
+
+    cap.release()
+
+
+def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=True):
+    with picamera.PiCamera() as camera:
+        camera.start_preview()
+    try:
+        for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'raspy_{counter:09d}.jpg'))):
+            photo_id = i + 1
+            # Build arguments
+            job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+
+            # Launch process to evaluate image
+            result_dict[photo_id] = worker_photo_analyzer(*job1_args)
+
+            # Ellapsed time for processing
+            elapsed = result_dict[photo_id]["time"]
+
+            # Do we have to wait?
+            should_wait = time_wait - elapsed > 0
+
+            # Time to sleep
+            if should_wait:
+                time.sleep(time_wait - elapsed)
+
+            # Finish loop
+            if i == it_max:
+                break
+    finally:
+        camera.stop_preview()
 
 
 if __name__ == '__main__':
