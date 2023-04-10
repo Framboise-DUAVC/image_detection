@@ -5,6 +5,9 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
     trigger = False
 
+    if frame is None:
+        frame = cv2.imread(filename)
+
     if show:
         cv2.imshow('Original', frame)
         cv2.waitKey(0)
@@ -60,4 +63,6 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
 # TODO: remove this
 if __name__ == '__main__':
     # Call main function
-    photo_analyzer(filename="test/aruco_id7_grass.jpeg", id_wanted=7, show=True)
+    photo_analyzer(frame=None,
+                   filename="/home/bryan/CLionProjects/ISAE/image_detection/test/out/test_capture_avril10_1/raspy_0000000046.jpg",
+                   id_wanted=7, show=True)
