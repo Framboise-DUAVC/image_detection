@@ -5,8 +5,6 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
     trigger = False
 
-    print(frame)
-    exit(0)
     if frame is None:
         frame = cv2.imread(filename)
 
