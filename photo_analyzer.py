@@ -1,12 +1,9 @@
 import cv2
 
 
-def photo_analyzer(filename, id_wanted, show=False, output=None):
+def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
     trigger = False
-
-    # Load the image
-    frame = cv2.imread(filename)
 
     if show:
         cv2.imshow('Original', frame)
@@ -53,6 +50,9 @@ def photo_analyzer(filename, id_wanted, show=False, output=None):
         #    # plt.show()
         #if output is not None:
         #    # plt.savefig(output)
+
+    # Save the image
+    cv2.imwrite(filename, frame)
 
     return trigger
 
