@@ -1,14 +1,12 @@
 import cv2
 
-#bash embed_launch.sh -o /home/pi/photo_test50 -r username@machine.local
-#bash embed_launch.sh -o /home/pi/photo_test50
 
-def photo_analyzer(filename,     id_wanted, show=False, output=None):
+def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
     trigger = False
 
-    # Load the image
-    frame = cv2.imread(filename)
+    if frame is None:
+        frame = cv2.imread(filename)
 
     if show:
         cv2.imshow('Original', frame)
@@ -27,27 +25,10 @@ def photo_analyzer(filename,     id_wanted, show=False, output=None):
         cv2.destroyAllWindows()
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
-
-    #messaroundspace
-
-    #markercompressed = (bytes[0:2, :, :], 7)
-    #bytes[6:7, :, :]
-    #dict_custom = cv2.aruco.Dictionary_create(0, 4)
-    #dictionary = m_bytes[6:7, :, :]
-    #dict = cv2.aruco.Dictionary_getBitsFromByteList(m_bytes[6:7, :, :], 4)
-    #dict3 = cv2.aruco.Dictionary_create(0, 4)
-    #dicttest.bytesList = marker_m_comp
-
-    dict_custom = cv2.aruco.Dictionary_create(0, 4)
-    m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
-    dict_custom.bytesList = m_bytes[6:7, :, :]
-    dictionary = dict_custom
-
     parameters = cv2.aruco.DetectorParameters_create()
-
     #cv2.aruco.Dictionary_readDictionary(1, dictionary)
-    #detector = cv2.aruco.ArucoDetector(dictionary, parameters)
-    #print(dictionary)
+    # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+    # print(dictionary)
     markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(gray_image, dictionary, parameters=parameters)
     # frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
 
@@ -73,10 +54,15 @@ def photo_analyzer(filename,     id_wanted, show=False, output=None):
         #if output is not None:
         #    # plt.savefig(output)
 
+    # Save the image
+    cv2.imwrite(filename, frame)
+
     return trigger
 
 
 # TODO: remove this
 if __name__ == '__main__':
     # Call main function
-    photo_analyzer(filename="test/aruco_id7_grass.jpeg", id_wanted=7, show=True)
+    photo_analyzer(frame=None,
+                   filename="/home/bryan/CLionProjects/ISAE/image_detection/test/out/test_capture_avril10_1/raspy_0000000046.jpg",
+                   id_wanted=7, show=True)

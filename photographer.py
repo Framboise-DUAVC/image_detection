@@ -1,11 +1,12 @@
 import csv
-import cv2
 import time
 import datetime
-import picamera
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import os
 import sys
 import tools
+import numpy as np
 
 # Project libraries
 import PhotoInfo
@@ -46,7 +47,7 @@ def safety_check_args(args_dict):
                 exit(-1)
 
 
-def worker_photo_analyzer(proc_num, filename, id_wanted, show=False, output=None, verbose=True) -> dict:
+def worker_photo_analyzer(proc_num, frame, filename, id_wanted, show=False, output=None, verbose=True) -> dict:
     # Start time
     start = time.time()
 
@@ -54,7 +55,8 @@ def worker_photo_analyzer(proc_num, filename, id_wanted, show=False, output=None
     result_dict = {}
 
     # Call function
-    has_marker = photo_analyzer.photo_analyzer(filename=filename, id_wanted=id_wanted, show=show, output=output)
+    has_marker = photo_analyzer.photo_analyzer(frame=frame, filename=filename, id_wanted=id_wanted, show=show,
+                                               output=output)
 
     # End time
     elapsed = time.time() - start
@@ -146,36 +148,33 @@ def main(args):
     print_msg("All done!", verbose=verbose)
 
 
-def capture_video(output):
-    cap = cv2.VideoCapture(0)
-
-    # Capture frame
-    ret, frame = cap.read()
-
-    if ret:
-        filename = os.path.join(output, 'raspy_{counter:09d}.jpg')
-        cv2.imwrite(os.path.join(output, 'raspy_{counter:09d}.jpg'), frame)
-
-    cap.release()
-
-
 def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=True):
+    # Set counter
+    i = 0
+
     print_msg("Starting continuous capture...", verbose)
-    with picamera.PiCamera() as camera:
+    with PiCamera() as camera:
         camera.start_preview()
+        # camera.resolution = (640, 480)
+        # camera.framerate = 32
+        rawCapture = PiRGBArray(camera, size=(camera.resolution[0], camera.resolution[1]))
         try:
-            for i, filename in enumerate(camera.capture_continuous(os.path.join(output, 'raspy_{counter:09d}.jpg'))):
-                # Set photo identifier
-                photo_id = i + 1
+            # capture frames from the camera
+            for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+                # grab the raw NumPy array representing the image, then initialize the timestamp
+                # and occupied/unoccupied text
+                image = frame.array
+
+                filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
 
                 # Build arguments
-                job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+                job1_args = (i, image, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
                 # Launch process to evaluate image
-                result_dict[photo_id] = worker_photo_analyzer(*job1_args)
+                result_dict[i] = worker_photo_analyzer(*job1_args)
 
                 # Ellapsed time for processing
-                elapsed = result_dict[photo_id]["time"]
+                elapsed = result_dict[i]["time"]
 
                 # Do we have to wait?
                 should_wait = time_wait - elapsed > 0
@@ -184,9 +183,13 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
                 if should_wait:
                     time.sleep(time_wait - elapsed)
 
-                # Finish loop
                 if i == it_max:
                     break
+
+                rawCapture.truncate(0)
+
+                i += 1
+
         finally:
             camera.stop_preview()
 
