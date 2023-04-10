@@ -169,7 +169,7 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
                 photo_id = i + 1
 
                 # Build arguments
-                job1_args = (photo_id, filename, 1, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+                job1_args = (photo_id, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
 
                 # Launch process to evaluate image
                 result_dict[photo_id] = worker_photo_analyzer(*job1_args)
