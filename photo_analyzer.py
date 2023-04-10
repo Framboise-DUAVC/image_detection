@@ -40,7 +40,8 @@ def photo_analyzer(filename,     id_wanted, show=False, output=None):
 
     dict_custom = cv2.aruco.Dictionary_create(0, 4)
     m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
-    dict_custom.bytesList = m_bytes[6:7, :, :]
+    #dict_custom.bytesList = m_bytes[6:7, :, :]
+    dict_custom.bytesList = m_bytes[:1, :, :]
     dictionary = dict_custom
 
     parameters = cv2.aruco.DetectorParameters_create()
