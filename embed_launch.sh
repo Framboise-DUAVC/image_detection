@@ -85,3 +85,5 @@ then
   echo "SENDING TO..    = ${RECEIVER}"
   scp "$OUTPUT_TAR" "$RECEIVER":~/Downloads/
 fi
+
+# TODO: Removing the zipped and the created folder only if required

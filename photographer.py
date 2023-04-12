@@ -2,7 +2,7 @@ import csv
 import time
 import datetime
 from picamera.array import PiRGBArray
-from picamera import PiCamera
+from picamera
 import os
 import sys
 import tools
@@ -153,7 +153,7 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
     i = 0
 
     print_msg("Starting continuous capture...", verbose)
-    with PiCamera() as camera:
+    with picamera.PiCamera() as camera:
         camera.start_preview()
         # camera.resolution = (640, 480)
         # camera.framerate = 32
