@@ -34,6 +34,7 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     #dicttest.bytesList = marker_m_comp
 
     dict_custom = cv2.aruco.Dictionary_create(0, 4)
+    dict_custom.maxCorrectionBits = 1
     m_bytes = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250).bytesList
     dict_custom.bytesList = m_bytes[6:7, :, :]
     dictionary = dict_custom
