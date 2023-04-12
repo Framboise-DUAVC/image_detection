@@ -2,7 +2,7 @@ import csv
 import time
 import datetime
 from picamera.array import PiRGBArray
-from picamera
+import picamera
 import os
 import sys
 import tools
