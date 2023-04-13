@@ -105,7 +105,7 @@ def main(args):
     # Set verbosity
     verbose = args_dict["verbose"].lower() == "true" if "verbose" in args_dict else False
 
-    # Check arguments
+    # Ensure arguments
     safety_check_args(args_dict)
 
     # Set the arguments
