@@ -26,6 +26,15 @@ async def trapdoor_servo_actuator(drone):
     print_servo_position_task.cancel()
 
 
+async def trapdoor_servo_actuator2(drone):
+    # print current servo position
+    print_servo_position_task = asyncio.ensure_future(print_gimbal_position(drone))
+
+    # set control mode of servo to primary
+    print("Taking control of trapdoor servo")
+    await drone.action.set_actuator(1, 100)
+
+
 async def print_gimbal_position(drone):
     # Report gimbal position updates asynchronously in euler angles
     async for angle in drone.telemetry.camera_attitude_euler():
