@@ -1,5 +1,7 @@
+
 import asyncio
 import mavsdk
+import banners
 import trapdoor
 
 
@@ -26,7 +28,7 @@ async def main():
             print(f"-- Connected to drone!")
 
             # Show banner
-            # print(banners.get_px4_banner())
+            print(banners.get_px4_banner())
 
             # Exit async
             break
