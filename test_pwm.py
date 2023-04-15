@@ -13,7 +13,7 @@ async def main():
     print("Trying to connect...")
 
     # Drone is in serial0
-    await drone.connect(system_address="serial:///dev/serial1:57600")
+    await drone.connect(system_address="serial:///dev/serial0:921600")
 
     # Ensure we have future package
     status_text_task = asyncio.ensure_future(print_status_text(drone))
