@@ -43,7 +43,7 @@ async def main():
     print(f"-- Aruco id n {7} detected!")
 
     # Trapdoor actuation
-    trapdoor.trapdoor_servo_actuator2(drone)
+    await trapdoor.trapdoor_servo_actuator2(drone)
 
     # Status check
     status_text_task.cancel()
