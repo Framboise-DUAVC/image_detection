@@ -34,10 +34,10 @@ async def main():
             break
 
     # Info...
-    print("-- Arming")
-
-    # Arm
-    await drone.action.arm()
+    # print("-- Arming")
+#
+    # # Arm
+    # await drone.action.arm()
 
     # Aruco detected info
     print(f"-- Aruco id n {7} detected!")
