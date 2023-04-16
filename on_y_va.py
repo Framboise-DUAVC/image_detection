@@ -1,11 +1,10 @@
 import asyncio
 import mavsdk
-import time
 import banners
 import trapdoor
 
-async def main():
 
+async def main():
     # Get drone object and then try to connect
     drone = mavsdk.System()
 
@@ -24,7 +23,6 @@ async def main():
     # Get connection state
     async for state in drone.core.connection_state():
         if state.is_connected:
-
             # Info if connected
             print(f"-- Connected to drone!")
 
@@ -40,7 +38,6 @@ async def main():
     # Check GPS
     async for health in drone.telemetry.health():
         if health.is_global_position_ok and health.is_home_position_ok:
-
             # Info
             print("-- Global position estimate OK")
 
@@ -70,12 +67,10 @@ async def main():
 
         # TODO: Change here what the mode will be when starting to do photos
         if str(flight_mode).strip().lower() == "hold":
-
             # Show info
             print("-- Starting photographer...")
 
             # TODO: Call the photographer here
-
 
             break
 
