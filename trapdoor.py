@@ -29,6 +29,9 @@ async def trapdoor_servo_actuator(drone):
 async def trapdoor_servo_actuator2(drone):
     # print current servo position
     # print_servo_position_task = asyncio.ensure_future(print_gimbal_position(drone))
+    is_active = await drone.offboard.is_active()
+
+    print(f"Is offboard active: {is_active}")
 
     # set control mode of servo to primary
     print("Taking control of trapdoor servo")
