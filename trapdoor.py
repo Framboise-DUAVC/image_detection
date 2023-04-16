@@ -32,7 +32,7 @@ async def trapdoor_servo_actuator2(drone):
 
     # set control mode of servo to primary
     print("Taking control of trapdoor servo")
-    await drone.action.set_actuator(1, 1000)
+    await drone.action.set_actuator(1, 0)
 
 
 async def print_gimbal_position(drone):
