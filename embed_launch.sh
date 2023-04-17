@@ -100,7 +100,7 @@ then
   rm -rf "${OUTPUT}"
 
   echo "Removing output tared file: ${OUTPUT_TAR}"
-  rm -rf "${OUTPUT}"
+  rm  "${OUTPUT}"
 else
   echo "Leaving all the created files!"
 fi
