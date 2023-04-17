@@ -20,5 +20,16 @@ pwm = RPi.GPIO.PWM(pin, 30)
 pwm.start(0)
 sm_angle = 45
 set_angle(sm_angle, pin)
+
+print("Rotating...")
+
+time.sleep(10)
+
+# Re-setting to zero
+print("Turning back to 0 degrees...")
+pwm.ChangeDutyCycle(2)
+time.sleep(1)
+pwm.ChangeDutyCycle(0)
+
+# Stop
 pwm.stop()
-RPi.GPIO.cleanup()
