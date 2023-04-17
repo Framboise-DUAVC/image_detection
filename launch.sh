@@ -1,1 +1,1 @@
-bash embed_launch.sh -o ~/camera_test -r bryan@msipre.local -mt 30 -rm
+bash embed_launch.sh -o "$HOME/camera_test" -r "bryan@msipre.local" -mt "30" -rm
