@@ -20,7 +20,7 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -f|--freq)
+    -mt|--max_time)
       FREQ_ARG="$2"
       shift # past argument
       shift # past value
@@ -55,7 +55,6 @@ VERBOSE=True
 echo "PYTHON_SCRIPT   = ${PYTHON_SCRIPT}"
 echo "OUTPUT          = ${OUTPUT}"
 echo "TIME            = ${TIME}"
-echo "FREQUENCY       = ${FREQ}"
 echo "VERBOSE         = ${VERBOSE}"
 if [ -z "$RECEIVER" ]
 then
@@ -70,7 +69,7 @@ then
       printf "Usage: \n%s\n" "$usage"
 else
       echo "Launching script..."
-      python3 "${PYTHON_SCRIPT}" --time "${TIME}" --freq "${FREQ}" --output "${OUTPUT}" --verbose "${VERBOSE}"
+      python3 "${PYTHON_SCRIPT}" --time "${TIME}" --max_time "${FREQ}" --output "${OUTPUT}" --verbose "${VERBOSE}"
 fi
 
 # Get the output name for the tar
