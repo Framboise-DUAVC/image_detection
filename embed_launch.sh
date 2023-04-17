@@ -24,7 +24,7 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -mt|--max_time)
-      FREQ_ARG="$2"
+      MAX_TIME="$2"
       shift # past argument
       shift # past value
       ;;
@@ -52,11 +52,10 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 # Set the arguments for the python call
 PYTHON_SCRIPT="photographer.py"
-TIME=20
-FREQ=5
-if ! [ -z "$FREQ_ARG" ]
+MAX_TIME=20
+if ! [ -z "$MAX_TIME" ]
 then
-  FREQ="$FREQ_ARG"
+  MAX_TIME="$MAX_TIME"
 fi
 VERBOSE=True
 
@@ -77,7 +76,7 @@ then
       printf "Usage: \n%s\n" "$usage"
 else
       echo "Launching script..."
-      python3 "${PYTHON_SCRIPT}" --time "${TIME}" --max_time "${FREQ}" --output "${OUTPUT}" --verbose "${VERBOSE}"
+      python3 "${PYTHON_SCRIPT}" --time "${TIME}" --max_time "${MAX_TIME}" --output "${OUTPUT}" --verbose "${VERBOSE}"
 fi
 
 # Get the output name for the tar
