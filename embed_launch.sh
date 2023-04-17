@@ -29,10 +29,10 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -rm|--remove)
-          rm_after=1
-          shift # past argument
-          shift # past value
-          ;;
+      rm_after=1
+      shift # past argument
+      shift # past value
+      ;;
     --default)
       DEFAULT=YES
       shift # past argument
