@@ -93,7 +93,7 @@ then
   scp "$OUTPUT_TAR" "$RECEIVER":~/Downloads/
 fi
 
-# TODO: Removing the zipped and the created folder only if required
+# Remove if user desires.
 if [ $rm_after -eq 1 ]
 then
   echo "Removing output folder: ${OUTPUT}"
