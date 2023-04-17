@@ -2,7 +2,7 @@ import RPi.GPIO
 import time
 
 pin = 32
-# power = 17, ground = 20
+# other pins: power = 17, ground = 20
 RPi.GPIO.setmode(RPi.GPIO.BOARD)
 RPi.GPIO.setup(pin_no, RPi.GPIO.OUT)
 pwm = RPi.GPIO.PWM(pin_no, 50)
