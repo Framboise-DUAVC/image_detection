@@ -8,7 +8,8 @@ usage="bash embed_launch.sh --output <filename> --receiver"
 POSITIONAL_ARGS=()
 
 # Preset some arguments
-rm_after=0
+RM_AFTER=0
+MAX_TIME=20
 
 # Iterate through the arguments
 while [[ $# -gt 0 ]]; do
@@ -29,7 +30,7 @@ while [[ $# -gt 0 ]]; do
       shift # past value
       ;;
     -rm|--remove)
-      rm_after=1
+      RM_AFTER=1
       shift # past argument
       shift # past value
       ;;
@@ -52,7 +53,7 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 # Set the arguments for the python call
 PYTHON_SCRIPT="photographer.py"
-MAX_TIME=20
+
 if ! [ -z "$MAX_TIME" ]
 then
   MAX_TIME="$MAX_TIME"
@@ -61,7 +62,7 @@ VERBOSE=True
 
 echo "PYTHON_SCRIPT   = ${PYTHON_SCRIPT}"
 echo "OUTPUT          = ${OUTPUT}"
-echo "TIME            = ${TIME}"
+echo "TIME            = ${MAX_TIME}"
 echo "VERBOSE         = ${VERBOSE}"
 if [ -z "$RECEIVER" ]
 then
@@ -93,7 +94,7 @@ then
 fi
 
 # Remove if user desires.
-if [ $rm_after -eq 1 ]
+if [ $RM_AFTER -eq 1 ]
 then
   echo "Removing output folder: ${OUTPUT}"
   rm -rf "${OUTPUT}"
