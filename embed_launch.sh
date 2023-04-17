@@ -7,6 +7,9 @@ usage="bash embed_launch.sh --output <filename> --receiver"
 # Positional arguments
 POSITIONAL_ARGS=()
 
+# Preset some arguments
+rm_after=0
+
 # Iterate through the arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -20,8 +23,13 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
-    -f|--freq)
-      FREQ_ARG="$2"
+    -mt|--max_time)
+      MAX_TIME="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -rm|--remove)
+      rm_after=1
       shift # past argument
       shift # past value
       ;;
@@ -44,18 +52,16 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 # Set the arguments for the python call
 PYTHON_SCRIPT="photographer.py"
-TIME=20
-FREQ=5
-if ! [ -z "$FREQ_ARG" ]
+MAX_TIME=20
+if ! [ -z "$MAX_TIME" ]
 then
-  FREQ="$FREQ_ARG"
+  MAX_TIME="$MAX_TIME"
 fi
 VERBOSE=True
 
 echo "PYTHON_SCRIPT   = ${PYTHON_SCRIPT}"
 echo "OUTPUT          = ${OUTPUT}"
 echo "TIME            = ${TIME}"
-echo "FREQUENCY       = ${FREQ}"
 echo "VERBOSE         = ${VERBOSE}"
 if [ -z "$RECEIVER" ]
 then
@@ -70,7 +76,7 @@ then
       printf "Usage: \n%s\n" "$usage"
 else
       echo "Launching script..."
-      python3 "${PYTHON_SCRIPT}" --time "${TIME}" --freq "${FREQ}" --output "${OUTPUT}" --verbose "${VERBOSE}"
+      python3 "${PYTHON_SCRIPT}" --time "${TIME}" --max_time "${MAX_TIME}" --output "${OUTPUT}" --verbose "${VERBOSE}"
 fi
 
 # Get the output name for the tar
@@ -86,4 +92,14 @@ then
   scp "$OUTPUT_TAR" "$RECEIVER":~/Downloads/
 fi
 
-# TODO: Removing the zipped and the created folder only if required
+# Remove if user desires.
+if [ $rm_after -eq 1 ]
+then
+  echo "Removing output folder: ${OUTPUT}"
+  rm -rf "${OUTPUT}"
+
+  echo "Removing output tared file: ${OUTPUT_TAR}"
+  rm -rf "${OUTPUT}"
+else
+  echo "Leaving all the created files!"
+fi

@@ -1,4 +1,3 @@
-
 import asyncio
 import mavsdk
 import banners

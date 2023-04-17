@@ -1,24 +1,35 @@
 import RPi.GPIO as GPIO
 import time
 
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(6, GPIO.OUT)
-servo = GPIO.PWM(6, 50)
 
-servo.start(0)
+def command_servo(pin_place: int, frequency: float):
+    # Set everything up
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(pin_place, GPIO.OUT)
+    servo = GPIO.PWM(pin_place, frequency)
 
-print("Rotating at intervals of 12 degrees")
-duty = 2
-while duty <= 17:
-    servo.ChangeDutyCycle(duty)
+    # Servo start 0 TODO: Why? @Krishna answer this
+    servo.start(0)
+
+    # Info
+    print("Rotating at intervals of 12 degrees")
+
+    # Duty: time signal is up
+    duty = 2
+    while duty <= 17:
+        servo.ChangeDutyCycle(duty)
+        time.sleep(1)
+        duty = duty + 1
+
+    # Re-setting back to zero
+    print("Turning back to 0 degrees")
+    servo.ChangeDutyCycle(2)
     time.sleep(1)
-    duty = duty + 1
+    servo.ChangeDutyCycle(0)
 
-print("Turning back to 0 degrees")
-servo.ChangeDutyCycle(2)
-time.sleep(1)
-servo.ChangeDutyCycle(0)
+    # Stop
+    servo.stop()
+    GPIO.cleanup()
 
-servo.stop()
-GPIO.cleanup()
-print ("Everything's cleaned up")
+    # Print
+    print("Everything's cleaned up")

@@ -29,7 +29,7 @@ def usage():
 
 def safety_check_args(args_dict):
     # Safety check mandatory arguments
-    mandatory_names = [("time", int), ("freq", int)]
+    mandatory_names = [("time", int), ("max_time", int)]
 
     for arg_mandatory in mandatory_names:
         if arg_mandatory[0] not in args_dict:
@@ -109,14 +109,11 @@ def main(args):
     safety_check_args(args_dict)
 
     # Set the arguments
-    time_secs = int(args_dict["time"])
-    freq_phot = int(args_dict["freq"])
+    max_time = int(args_dict["max_time"])
     output = args_dict["output"] if "output" in args_dict else "/home/pi/captures/"
     show = args_dict["show"] if "show" in args_dict else False
 
     # Compute total iterations
-    it_max = int(freq_phot * time_secs) - 1
-    time_wait = 1.0 / freq_phot
 
     if not os.path.exists(output):
         os.mkdir(output)
@@ -129,7 +126,7 @@ def main(args):
     print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
 
     # Here we can either call CAPTURE_CONTINUOUS or TBD: CAPTURE_VIDEO
-    continuous_capture(jobs_return_dict, output, show, time_wait, it_max, verbose)
+    continuous_capture(jobs_return_dict, output, show, max_time, verbose)
 
     # Print csv file in output folder
     with open(os.path.join(output, "summary.csv"), "w") as fcsv:
@@ -148,9 +145,12 @@ def main(args):
     print_msg("All done!", verbose=verbose)
 
 
-def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=True):
+def continuous_capture(result_dict, output, show, max_time, verbose=True):
     # Set counter
     i = 0
+
+    # Start time counter
+    start_time = datetime.datetime.now()
 
     print_msg("Starting continuous capture...", verbose)
     with picamera.PiCamera() as camera:
@@ -176,14 +176,12 @@ def continuous_capture(result_dict, output, show, time_wait, it_max, verbose=Tru
                 # Ellapsed time for processing
                 elapsed = result_dict[i]["time"]
 
-                # Do we have to wait?
-                should_wait = time_wait - elapsed > 0
+                # Check timing process_time = final_time - initial_time
+                current_time = datetime.datetime.now()
+                elapsed_time = current_time - start_time
 
                 # Time to sleep
-                if should_wait:
-                    time.sleep(time_wait - elapsed)
-
-                if i == it_max:
+                if elapsed_time.total_seconds() > max_time:
                     break
 
                 rawCapture.truncate(0)
