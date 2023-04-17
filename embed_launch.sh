@@ -7,6 +7,9 @@ usage="bash embed_launch.sh --output <filename> --receiver"
 # Positional arguments
 POSITIONAL_ARGS=()
 
+# Preset some arguments
+rm_after=0
+
 # Iterate through the arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -25,6 +28,11 @@ while [[ $# -gt 0 ]]; do
       shift # past argument
       shift # past value
       ;;
+    -rm|--remove)
+          rm_after=1
+          shift # past argument
+          shift # past value
+          ;;
     --default)
       DEFAULT=YES
       shift # past argument
@@ -86,3 +94,13 @@ then
 fi
 
 # TODO: Removing the zipped and the created folder only if required
+if [ $rm_after -eq 1 ]
+then
+  echo "Removing output folder: ${OUTPUT}"
+  rm -rf "${OUTPUT}"
+
+  echo "Removing output tared file: ${OUTPUT_TAR}"
+  rm -rf "${OUTPUT}"
+else
+  echo "Leaving all the created files!"
+fi
