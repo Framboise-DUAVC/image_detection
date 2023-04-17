@@ -29,7 +29,7 @@ def usage():
 
 def safety_check_args(args_dict):
     # Safety check mandatory arguments
-    mandatory_names = [("time", int), ("freq", int)]
+    mandatory_names = [("time", int), ("max_time", int)]
 
     for arg_mandatory in mandatory_names:
         if arg_mandatory[0] not in args_dict:
