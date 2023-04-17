@@ -61,7 +61,7 @@ VERBOSE=True
 
 echo "PYTHON_SCRIPT   = ${PYTHON_SCRIPT}"
 echo "OUTPUT          = ${OUTPUT}"
-echo "TIME            = ${TIME}"
+echo "TIME            = ${MAX_TIME}"
 echo "VERBOSE         = ${VERBOSE}"
 if [ -z "$RECEIVER" ]
 then
