@@ -165,7 +165,7 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True):
                 # and occupied/unoccupied text
                 image = frame.array
 
-                filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.jpg")
+                filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.npy")
 
                 # Build arguments
                 job1_args = (i, image, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
