@@ -1,7 +1,9 @@
 import asyncio
 import mavsdk
 import banners
-import trapdoor
+import datetime
+
+import photographer
 
 
 async def main():
@@ -71,6 +73,19 @@ async def main():
             print("-- Starting photographer...")
 
             # TODO: Call the photographer here
+            # Get time formatted as a string
+            mission_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+            # Prepare arguments for photographer
+            detection_args = ["dummy",
+                "--max_time",   "3600",                       # time [seconds]
+                "--output",     f"~/mission_{mission_time}",    #
+                "--mission",    "true", #
+                "--verbose",    "true"  #
+            ]
+
+            # Call to main photographer detector
+            photographer.main(detection_args)
 
             break
 
