@@ -149,7 +149,7 @@ def main(args):
 
     # Info
     print_msg("Converting numpy files to jpg files...", verbose=verbose)
-    print(np_files)
+
     # Convert files
     for np_file in np_files:
         if np_file.endswith(".npy"):
