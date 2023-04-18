@@ -145,20 +145,24 @@ def main(args):
             csvwriter.writerow(row2write)
 
     # Finally, open all the numpy files and write them as jpg for fast transfering
-    np_files = glob.glob(output)
+    np_files = os.listdir(output)
 
     # Info
     print_msg("Converting numpy files to jpg files...", verbose=verbose)
-
+    print(np_files)
     # Convert files
     for np_file in np_files:
         if np_file.endswith(".npy"):
-            with open(np_file, 'rb') as f:
+
+            # Build filepath
+            np_filepath = os.path.join(output, np_file)
+
+            with open(np_filepath, 'rb') as f:
                 np_frame = np.load(f)
-                cv2.imwrite(np_file.replace(".npy", ".jpg"), np_frame)
+                cv2.imwrite(np_filepath.replace(".npy", ".jpg"), np_frame)
 
             # Get rid of the numpy file
-            os.remove(np_file)
+            os.remove(np_filepath)
 
     # Info
     print_msg("All files converted!", verbose=verbose)
