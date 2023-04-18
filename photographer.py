@@ -91,7 +91,7 @@ def main(args: []) -> int:
     # Safety check
     if len(args) == 0:
         print(f"ERROR: No arguments passed!")
-        print(usage())
+        print(f"{usage()}")
         exit(-1)
 
     # Set the arguments
@@ -199,9 +199,6 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
                         aruco_detected = True
                         break
 
-                # Ellapsed time for processing
-                elapsed = result_dict[i]["time"]
-
                 # Check timing process_time = final_time - initial_time
                 current_time = datetime.datetime.now()
                 elapsed_time = current_time - start_time
@@ -211,7 +208,6 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
                     break
 
                 rawCapture.truncate(0)
-
                 i += 1
 
         finally:
