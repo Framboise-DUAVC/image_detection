@@ -30,7 +30,7 @@ def safety_check_args(args_dict):
 
     for arg_mandatory in mandatory_names:
         if arg_mandatory[0] not in args_dict:
-            tools.print_msg(f"Argument --{arg_mandatory} is mandatory! Please provide it.", verbose=True)
+            tools.print_msg(f"Argument --{arg_mandatory[0]} is mandatory! Please provide it.", verbose=True)
             usage()
             exit(-1)
         else:
@@ -99,7 +99,7 @@ def main(args) -> int:
 
     # Set the arguments
     args_dict = tools.parse_arguments(args=args)
-
+    print(args_dict)
     # Set verbosity
     verbose = args_dict["verbose"].lower() == "true" if "verbose" in args_dict else False
 
