@@ -46,3 +46,6 @@ def main(angle: int = 90, freq: int = 30, wait_time: int = 10, pin_num: int =32,
 
     # Stop
     pwm.stop()
+
+    # Clean stuff
+    RPi.GPIO.cleanup()
