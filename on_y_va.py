@@ -94,7 +94,7 @@ def detection_and_action(verbose: bool = True) -> None:
     # Prepare arguments for photographer
     detection_args = ["dummy",
                       "--max_time", "3600",  # time [seconds]
-                      "--output", f"~/mission_{mission_time}",  #
+                      "--output", f"mission_{mission_time}",  #
                       "--mission", "true",  #
                       "--verbose", f"{verbose}"  #
                       ]
