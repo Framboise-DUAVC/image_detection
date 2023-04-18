@@ -35,7 +35,7 @@ def safety_check_args(args_dict):
             exit(-1)
         else:
             try:
-                trial = int(args_dict[arg_mandatory[0]])
+                trial = arg_mandatory[1](args_dict[arg_mandatory[0]])
             except Exception as e:
                 tools.print_msg(f"Argument --{arg_mandatory[0]} could not be parsed. Please follow the format.", verbose=True)
                 tools.print_msg("---Error Follows---", verbose=True)
