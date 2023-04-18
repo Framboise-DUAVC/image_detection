@@ -96,7 +96,7 @@ def main(args: []) -> int:
 
     # Get the useful arguments
     args = sys.argv[1:]
-
+    print(args)
     # Set the arguments
     args_dict = tools.parse_arguments(args=args)
     print(args_dict)
