@@ -4,9 +4,10 @@ import banners
 import datetime
 
 import photographer
+import tools
 
 
-async def main():
+async def main(verbose: bool = True):
     # Get drone object and then try to connect
     drone = mavsdk.System()
 
@@ -81,16 +82,20 @@ async def main():
                 "--max_time",   "3600",                       # time [seconds]
                 "--output",     f"~/mission_{mission_time}",    #
                 "--mission",    "true", #
-                "--verbose",    "true"  #
+                "--verbose",    f"{verbose}"  #
             ]
 
             # Call to main photographer detector
-            photographer.main(detection_args)
+            detected = photographer.main(detection_args)
+
+            # Check return flag
+            if detected==1:
+                tools.print_msg("Aruco marker detected!, Actioning trapdoor...", verbose=verbose)
+
+                # Action trapdoor
+
 
             break
-
-    # Aruco detected info
-    print(f"-- Aruco id n {7} detected!")
 
     # Trapdoor actuation
     trapdoor.trapdoor_servo_actuator(drone)

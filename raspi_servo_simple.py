@@ -1,6 +1,8 @@
 import RPi.GPIO
 import time
 
+import tools
+
 
 def set_angle(angle, pin_no):
     duty = (angle / 18) + 2
@@ -12,24 +14,35 @@ def set_angle(angle, pin_no):
     return
 
 
-pin = 32
-# other pins: power = 17, ground = 20
-RPi.GPIO.setmode(RPi.GPIO.BOARD)
-RPi.GPIO.setup(pin, RPi.GPIO.OUT)
-pwm = RPi.GPIO.PWM(pin, 30)
-pwm.start(0)
-sm_angle = 45
-set_angle(sm_angle, pin)
+def main(angle: int = 90, freq: int = 30, wait_time: int = 10, pin_num: int =32, verbose: bool = False):
+    # Other pins: power = 17, ground = 20
+    RPi.GPIO.setmode(RPi.GPIO.BOARD)
+    RPi.GPIO.setup(pin_num, RPi.GPIO.OUT)
 
-print("Rotating...")
+    # Set PWM frequency and pin number
+    pwm = RPi.GPIO.PWM(pin_num, freq)
 
-time.sleep(10)
+    # Start action
+    pwm.start(0)
 
-# Re-setting to zero
-print("Turning back to 0 degrees...")
-pwm.ChangeDutyCycle(2)
-time.sleep(1)
-pwm.ChangeDutyCycle(0)
+    # Set the angle
+    set_angle(angle, pin_num)
 
-# Stop
-pwm.stop()
+    # Info
+    tools.print_msg(f"Rotating '{}'...", verbose=verbose)
+
+    # Wait some time at that position...
+    time.sleep(wait_time)
+
+    # Re-setting to zero
+    tools.print_msg("Turning back to 0 degrees...", verbose=verbose)
+
+    # Re-setting values
+    pwm.ChangeDutyCycle(2)
+
+    # Wait again
+    time.sleep(1)
+    pwm.ChangeDutyCycle(0)
+
+    # Stop
+    pwm.stop()
