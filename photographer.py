@@ -87,7 +87,7 @@ def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose)
             escape = True
 
 
-def main(args) -> int:
+def main(args: []) -> int:
     # Safety check
     if len(args) == 0:
         print(f"ERROR: No arguments passed!")
