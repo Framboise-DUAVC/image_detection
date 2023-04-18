@@ -10,6 +10,7 @@ POSITIONAL_ARGS=()
 # Preset some arguments
 RM_AFTER=0
 MAX_TIME=20
+MISSION=false
 
 # Iterate through the arguments
 while [[ $# -gt 0 ]]; do
@@ -31,6 +32,11 @@ while [[ $# -gt 0 ]]; do
       ;;
     -rm|--remove)
       RM_AFTER=1
+      shift # past argument
+      shift # past value
+      ;;
+    -mis|--mission)
+      MISSION=true
       shift # past argument
       shift # past value
       ;;
@@ -77,7 +83,7 @@ then
       printf "Usage: \n%s\n" "$usage"
 else
       echo "Launching script..."
-      python3 "${PYTHON_SCRIPT}" --time "${TIME}" --max_time "${MAX_TIME}" --output "${OUTPUT}" --verbose "${VERBOSE}"
+      python3 "${PYTHON_SCRIPT}" --max_time "${MAX_TIME}" --output "${OUTPUT}" --mission "${MISSION}" --verbose "${VERBOSE}"
 fi
 
 # Get the output name for the tar

@@ -15,11 +15,6 @@ import PhotoInfo
 import photo_analyzer
 
 
-def print_msg(msg, verbose):
-    if verbose:
-        print(msg)
-
-
 def usage():
     return "---Usage Follows---" \
            "\nphotographer.py --time <int> --freq <int> --output <string:OPTIONAL> --verbose <True/False:OPTIONAL>" \
@@ -31,20 +26,20 @@ def usage():
 
 def safety_check_args(args_dict):
     # Safety check mandatory arguments
-    mandatory_names = [("max_time", int)]
+    mandatory_names = [("max_time", int), ("mission", str)]
 
     for arg_mandatory in mandatory_names:
         if arg_mandatory[0] not in args_dict:
-            print_msg(f"Argument --{arg_mandatory} is mandatory! Please provide it.", verbose=True)
+            tools.print_msg(f"Argument --{arg_mandatory} is mandatory! Please provide it.", verbose=True)
             usage()
             exit(-1)
         else:
             try:
                 trial = int(args_dict[arg_mandatory[0]])
             except Exception as e:
-                print_msg(f"Argument --{arg_mandatory[0]} could not be parsed. Please follow the format.", verbose=True)
-                print_msg("---Error Follows---", verbose=True)
-                print_msg(f"{e.__str__()}", verbose=True)
+                tools.print_msg(f"Argument --{arg_mandatory[0]} could not be parsed. Please follow the format.", verbose=True)
+                tools.print_msg("---Error Follows---", verbose=True)
+                tools.print_msg(f"{e.__str__()}", verbose=True)
                 usage()
                 exit(-1)
 
@@ -69,7 +64,7 @@ def worker_photo_analyzer(proc_num, frame, filename, id_wanted, show=False, outp
     result_dict["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Print info
-    print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
+    tools.print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
 
     # Insert to the queue
     return result_dict
@@ -87,7 +82,7 @@ def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose)
 
         if counter >= threshold:
             if verbose:
-                print_msg(f"Marker detected '{counter}' times!", verbose)
+                tools.print_msg(f"Marker detected '{counter}' times!", verbose)
             escape = True
 
 
@@ -109,27 +104,27 @@ def main(args):
 
     # Ensure arguments
     safety_check_args(args_dict)
-
+    
     # Set the arguments
     max_time = int(args_dict["max_time"])
     output = args_dict["output"] if "output" in args_dict else "/home/pi/captures/"
     show = args_dict["show"] if "show" in args_dict else False
+    mission = True if args_dict["mission"].lower() == "true" else False
 
     # Compute total iterations
-
     if not os.path.exists(output):
         os.mkdir(output)
-        print_msg(f"Successfully created output directory: {output}", verbose)
+        tools.print_msg(f"Successfully created output directory: {output}", verbose)
 
     # Append here the processes
     jobs_return_dict = {}
 
     # Print info
-    print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
+    tools.print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
 
     # Here we can either call CAPTURE_CONTINUOUS or TBD: CAPTURE_VIDEO
-    continuous_capture(jobs_return_dict, output, show, max_time, verbose)
-
+    continuous_capture(jobs_return_dict, output, show, max_time, verbose, mission=mission)
+    
     # Print csv file in output folder
     with open(os.path.join(output, "summary.csv"), "w") as fcsv:
         csvwriter = csv.writer(fcsv)
@@ -144,41 +139,25 @@ def main(args):
             row2write = [job_id, proc_filename, has_marker, elapsed_time, date_time]
             csvwriter.writerow(row2write)
 
-    # Finally, open all the numpy files and write them as jpg for fast transfering
-    np_files = os.listdir(output)
+    # If mission mode, exit rapidly and return flag==1
+    if mission:
+        exit(1)
+
+    # If it is not mission mode, then convert numpy to jpg
+    tools.convert_numpy_to_jpg(output, verbose=verbose)
 
     # Info
-    print_msg("Converting numpy files to jpg files...", verbose=verbose)
-
-    # Convert files
-    for np_file in np_files:
-        if np_file.endswith(".npy"):
-
-            # Build filepath
-            np_filepath = os.path.join(output, np_file)
-
-            with open(np_filepath, 'rb') as f:
-                np_frame = np.load(f)
-                cv2.imwrite(np_filepath.replace(".npy", ".jpg"), np_frame)
-
-            # Get rid of the numpy file
-            os.remove(np_filepath)
-
-    # Info
-    print_msg("All files converted!", verbose=verbose)
-
-    # Info
-    print_msg("All done!", verbose=verbose)
+    tools.print_msg("All done!", verbose=verbose)
 
 
-def continuous_capture(result_dict, output, show, max_time, verbose=True):
+def continuous_capture(result_dict, output, show, max_time, verbose=True, mission=False):
     # Set counter
     i = 0
 
     # Start time counter
     start_time = datetime.datetime.now()
 
-    print_msg("Starting continuous capture...", verbose)
+    tools.print_msg("Starting continuous capture...", verbose)
     with picamera.PiCamera() as camera:
         camera.start_preview()
         # camera.resolution = (640, 480)
@@ -198,6 +177,15 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True):
 
                 # Launch process to evaluate image
                 result_dict[i] = worker_photo_analyzer(*job1_args)
+
+                # If mission mode
+                if mission:
+                    has_marker = result_dict[i]["info"].get_has_marker()
+                    
+                    if has_marker:
+                        tools.print_msg(f"Aruco marker detected in iteration number; '{i}'. Exiting photographer loop!",
+                                  verbose=verbose)
+                        break
 
                 # Ellapsed time for processing
                 elapsed = result_dict[i]["time"]
