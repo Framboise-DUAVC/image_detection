@@ -1,4 +1,5 @@
 import csv
+import glob
 import time
 import datetime
 from picamera.array import PiRGBArray
@@ -7,6 +8,7 @@ import os
 import sys
 import tools
 import numpy as np
+import cv2
 
 # Project libraries
 import PhotoInfo
@@ -142,6 +144,26 @@ def main(args):
             row2write = [job_id, proc_filename, has_marker, elapsed_time, date_time]
             csvwriter.writerow(row2write)
 
+    # Finally, open all the numpy files and write them as jpg for fast transfering
+    np_files = glob.glob(output)
+
+    # Info
+    print_msg("Converting numpy files to jpg files...", verbose=verbose)
+
+    # Convert files
+    for np_file in np_files:
+        if np_file.endswith(".npy"):
+            with open(np_file, 'rb') as f:
+                np_frame = np.load(f)
+                cv2.imwrite(np_file.replace(".npy", ".jpg"), np_frame)
+
+            # Get rid of the numpy file
+            os.remove(np_file)
+
+    # Info
+    print_msg("All files converted!", verbose=verbose)
+
+    # Info
     print_msg("All done!", verbose=verbose)
 
 
