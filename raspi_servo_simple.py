@@ -4,7 +4,7 @@ import time
 import tools
 
 
-def set_angle(angle, pin_no):
+def set_angle(angle, pin_no, pwm):
     duty = (angle / 18) + 2
     RPi.GPIO.output(pin_no, True)
     pwm.ChangeDutyCycle(duty)
@@ -26,7 +26,7 @@ def main(angle: int = 90, freq: int = 30, wait_time: int = 10, pin_num: int =32,
     pwm.start(0)
 
     # Set the angle
-    set_angle(angle, pin_num)
+    set_angle(angle, pin_num, pwm)
 
     # Info
     tools.print_msg(f"Rotating '{angle}' degrees...", verbose=verbose)
