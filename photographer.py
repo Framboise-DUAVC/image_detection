@@ -94,12 +94,9 @@ def main(args: []) -> int:
         print(usage())
         exit(-1)
 
-    # Get the useful arguments
-    args = sys.argv[1:]
-    print(args)
     # Set the arguments
     args_dict = tools.parse_arguments(args=args)
-    print(args_dict)
+
     # Set verbosity
     verbose = args_dict["verbose"].lower() == "true" if "verbose" in args_dict else False
 
