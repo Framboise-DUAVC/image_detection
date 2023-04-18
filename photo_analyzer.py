@@ -1,5 +1,5 @@
 import cv2
-
+import numpy as np
 
 def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
@@ -55,7 +55,9 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
         #    # plt.savefig(output)
 
     # Save the image
-    cv2.imwrite(filename, frame)
+    with open(filename, 'wb') as f_out:
+        np.save(f_out, frame)
+        np.save(f_out, frame)
 
     return trigger
 
