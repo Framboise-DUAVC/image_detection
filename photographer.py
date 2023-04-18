@@ -108,9 +108,11 @@ def main(args: []) -> int:
     output = args_dict["output"] if "output" in args_dict else "/home/pi/captures/"
     show = args_dict["show"] if "show" in args_dict else False
     mission = True if args_dict["mission"].lower() == "true" else False
+    output = os.path.abspath(output)
 
     # Compute total iterations
     if not os.path.exists(output):
+        # Create absolute path
         os.mkdir(output)
         tools.print_msg(f"Successfully created output directory: {output}", verbose)
 
