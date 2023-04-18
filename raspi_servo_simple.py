@@ -29,7 +29,7 @@ def main(angle: int = 90, freq: int = 30, wait_time: int = 10, pin_num: int =32,
     set_angle(angle, pin_num)
 
     # Info
-    tools.print_msg(f"Rotating '{}'...", verbose=verbose)
+    tools.print_msg(f"Rotating '{angle}' degrees...", verbose=verbose)
 
     # Wait some time at that position...
     time.sleep(wait_time)
