@@ -1,7 +1,7 @@
 
 # Screen username
-uname="bryan"
-mission_log="/home/pi/mission_log_${uname}"
+uname="detection_action-$1"
+mission_log="/home/pi/mission_log_${uname}.log"
 
 
 # Open screen session
