@@ -110,11 +110,18 @@ def main(args: []) -> int:
     mission = True if args_dict["mission"].lower() == "true" else False
     output = os.path.abspath(output)
 
+    # Do break? OPTIONAL ARGUMENTS
+    do_break = True
+    if "do_break" in args_dict:
+        do_break = False if args_dict["do_break"].lower() == "false" else True
+
     # Compute total iterations
     if not os.path.exists(output):
         # Create absolute path
         os.mkdir(output)
         tools.print_msg(f"Successfully created output directory: {output}", verbose)
+    else:
+        tools.print_msg(f"Directory previously existing, not overriding: {output}", verbose)
 
     # Append here the processes
     jobs_return_dict = {}
@@ -123,13 +130,22 @@ def main(args: []) -> int:
     tools.print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
 
     # Here we can either call CAPTURE_CONTINUOUS or TBD: CAPTURE_VIDEO
-    aruco_detected = continuous_capture(jobs_return_dict, output, show, max_time, verbose, mission=mission)
+    aruco_detected = continuous_capture(jobs_return_dict, output, show, max_time, verbose, mission=mission,
+                                        do_break=do_break)
 
     # Print csv file in output folder
-    with open(os.path.join(output, "summary.csv"), "w") as fcsv:
+    summary_path = os.path.join(output, "summary.csv")
+    summary_exists = os.path.exists(summary_path)
+
+    # Info
+    if summary_exists:
+        tools.print_msg(f"Summary file already exists!, Appending data to it... File: {summary_path}", verbose=verbose)
+
+    with open(summary_path, "a" if summary_exists else "w") as fcsv:
         csvwriter = csv.writer(fcsv)
 
-        csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time", "Date"])
+        if not summary_exists:
+            csvwriter.writerow(["Process number", "Filename", "Marker detected", "Elapsed time", "Date"])
 
         for job_id in jobs_return_dict:
             proc_filename = jobs_return_dict[job_id]["info"].get_filename()
@@ -158,7 +174,7 @@ def main(args: []) -> int:
     return 0
 
 
-def continuous_capture(result_dict, output, show, max_time, verbose=True, mission=False) -> bool:
+def continuous_capture(result_dict, output, show, max_time, verbose=True, mission=False, do_break=True) -> bool:
     # Set counter
     i = 0
 
@@ -194,10 +210,23 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
                     has_marker = result_dict[i]["info"].get_has_marker()
 
                     if has_marker:
-                        tools.print_msg(f"Aruco marker detected in iteration number; '{i}'. Exiting photographer loop!",
-                                        verbose=verbose)
+
+                        # Build message to display
+                        msg2print = f"Aruco marker detected in iteration number; '{i}'"
+
+                        if do_break:
+                            msg2print += f"Exiting photographer loop!"
+                        else:
+                            msg2print += f"Keeping in photographer loop..."
+
+                        tools.print_msg(f"{msg2print}", verbose=verbose)
+
+                        # Set aruco detected to True
                         aruco_detected = True
-                        break
+
+                        # If not "do_break", don't break the loop
+                        if do_break:
+                            break
 
                 # Check timing process_time = final_time - initial_time
                 current_time = datetime.datetime.now()

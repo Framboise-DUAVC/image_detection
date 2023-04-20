@@ -70,12 +70,12 @@ async def main(verbose: bool = True):
         tools.print_msg(f"-- FlightMode: {str(flight_mode)}", verbose=verbose)
 
         # TODO: Change here what the mode will be when starting to do photos
-        if str(flight_mode).strip().lower() == "hold":
+        if str(flight_mode).strip().lower() == "mission":
             # Show info
             tools.print_msg("-- Starting photographer...", verbose=verbose)
 
             # Call to detection and action
-            detection_and_action(verbose=verbose)
+            detection_and_action(restart_photo=False, actuate=True, verbose=verbose)
 
             break
 
@@ -87,7 +87,7 @@ async def main(verbose: bool = True):
     status_text_task.cancel()
 
 
-def detection_and_action(verbose: bool = True) -> None:
+def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbose: bool = True) -> None:
     # Get time formatted as a string
     mission_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -99,15 +99,22 @@ def detection_and_action(verbose: bool = True) -> None:
                       "--verbose", f"{verbose}"  # Verbose mode enabled?
                       ]
 
+
     # Call to main photographer detector
     detected = photographer.main(detection_args)
 
     # Check return flag
-    if detected == 1:
+    if detected == 1 and actuate:
         tools.print_msg("Aruco marker detected!, Actioning trapdoor...", verbose=verbose)
 
         # Action trapdoor
         raspi_servo_simple.main(verbose=verbose)
+        
+    # If keep, continuo taking pictures
+    if restart_photo:
+        detection_args.append("--do_break")
+        detection_args.append(f"False")
+        photographer.main(detection_args)
 
 
 async def print_status_text(drone, verbose: bool):
