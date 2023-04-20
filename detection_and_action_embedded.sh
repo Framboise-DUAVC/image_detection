@@ -8,4 +8,4 @@ mission_log="/home/pi/mission_log_${uname}"
 screen -S "${uname}"
 
 # Launch python command
-python3 detection_action_test.py | tee mission_log
+python3 detection_action_test.py | tee "${mission_log}"
