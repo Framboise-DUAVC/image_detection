@@ -99,21 +99,34 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
                       "--verbose", f"{verbose}"  # Verbose mode enabled?
                       ]
 
-
     # Call to main photographer detector
-    detected = photographer.main(detection_args)
+    detection_dict_flags = photographer.main(detection_args)
+
+    # Safety check it is not an empty dictionary
+    not_empty = bool(detection_dict_flags)
+
+    # Check for emptiness
+    if not not_empty:
+        tools.print_msg(f"Returned dictionary is empty! Something went wrong! Exiting function...", verbose=verbose)
+        return
+
+    # Recover flags from the dictionary
+    detected = detection_dict_flags["detected"]
+    photo_id = detection_dict_flags["id"]
 
     # Check return flag
-    if detected == 1 and actuate:
+    if detected and actuate:
         tools.print_msg("Aruco marker detected!, Actioning trapdoor...", verbose=verbose)
 
         # Action trapdoor
         raspi_servo_simple.main(verbose=verbose)
-        
+
     # If keep, continuo taking pictures
     if restart_photo:
         detection_args.append("--do_break")
         detection_args.append(f"False")
+        detection_args.append("--offset")
+        detection_args.append(f"{photo_id + 1}")
         photographer.main(detection_args)
 
 
