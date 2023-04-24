@@ -38,6 +38,19 @@ def parse_arguments(args, verbose=False):
 
 
 def convert_numpy_to_jpg(dirpath: os.PathLike or str, verbose: bool) -> None:
+    # Safety check that the directory exists
+    if os.path.exists(dirpath):
+        print_msg(f"Accessing directory...: {dirpath}", verbose=verbose)
+    else:
+        # Info, returning without doing any change
+        print_msg(f"ERROR: Couldn't open directory! Ensure path exist: {dirpath}", verbose=verbose)
+
+        # Exit function
+        print_msg(f"ERROR: Exiting function...", verbose=verbose)
+
+        # Exit!
+        return
+
     # Get objects in the folder
     np_files = os.listdir(dirpath)
 
