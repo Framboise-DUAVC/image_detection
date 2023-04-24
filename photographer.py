@@ -87,7 +87,7 @@ def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose)
             escape = True
 
 
-def main(args: []) -> int:
+def main(args: []) -> dict:
     # Safety check
     if len(args) == 0:
         print(f"ERROR: No arguments passed!")
@@ -108,6 +108,7 @@ def main(args: []) -> int:
     output = args_dict["output"] if "output" in args_dict else "/home/pi/captures/"
     show = args_dict["show"] if "show" in args_dict else False
     mission = True if args_dict["mission"].lower() == "true" else False
+    offset = int(args_dict["offset"]) if "offset" in args_dict else 0
     output = os.path.abspath(output)
 
     # Do break? OPTIONAL ARGUMENTS
@@ -127,11 +128,15 @@ def main(args: []) -> int:
     jobs_return_dict = {}
 
     # Print info
-    tools.print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
+    if offset == 0:
+        tools.print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
 
     # Here we can either call CAPTURE_CONTINUOUS or TBD: CAPTURE_VIDEO
-    aruco_detected = continuous_capture(jobs_return_dict, output, show, max_time, verbose, mission=mission,
-                                        do_break=do_break)
+    detection_dict_flags = continuous_capture(jobs_return_dict, output, show, max_time,
+                                              verbose=verbose,
+                                              mission=mission,
+                                              do_break=do_break,
+                                              offset=offset)
 
     # Print csv file in output folder
     summary_path = os.path.join(output, "summary.csv")
@@ -157,12 +162,12 @@ def main(args: []) -> int:
 
     # If mission mode, exit rapidly and return flag==1
     if mission:
-        if aruco_detected:
-            return 1
+        if detection_dict_flags["detected"]:
+            return detection_dict_flags
         else:
             tools.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function...",
                             verbose=verbose)
-            return 0
+            return {}
 
     # If it is not mission mode, then convert numpy to jpg
     tools.convert_numpy_to_jpg(output, verbose=verbose)
@@ -171,15 +176,17 @@ def main(args: []) -> int:
     tools.print_msg("All done!", verbose=verbose)
 
     # Return
-    return 0
+    return {}
 
 
-def continuous_capture(result_dict, output, show, max_time, verbose=True, mission=False, do_break=True) -> bool:
+def continuous_capture(result_dict, output, show, max_time, verbose=True, mission=False, do_break=True,
+                       offset=0) -> dict:
     # Set counter
-    i = 0
+    i = offset
 
     # Aruco detected?
     aruco_detected = False
+    aruco_photo_id = -1
 
     # Start time counter
     start_time = datetime.datetime.now()
@@ -212,7 +219,7 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
                     if has_marker:
 
                         # Build message to display
-                        msg2print = f"Aruco marker detected in iteration number; '{i}'"
+                        msg2print = f"Aruco marker detected in iteration number; '{i}'. "
 
                         if do_break:
                             msg2print += f"Exiting photographer loop!"
@@ -223,6 +230,7 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
 
                         # Set aruco detected to True
                         aruco_detected = True
+                        aruco_photo_id = i
 
                         # If not "do_break", don't break the loop
                         if do_break:
@@ -242,8 +250,14 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
         finally:
             camera.stop_preview()
 
+    # Result dictionary
+    result = {
+        "detected": aruco_detected,
+        "id": aruco_photo_id
+    }
+
     # Return boolean
-    return aruco_detected
+    return result
 
 
 if __name__ == '__main__':
