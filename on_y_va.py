@@ -97,7 +97,7 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
     photo_id = 0
 
     # Prepare arguments for photographer
-    detection_args = ["dummy",
+    detection_args = ["--dummy_argument_dont_remove_me",
                       "--max_time", "3600",  # time [seconds]
                       "--output", f"/home/pi/mission_{mission_time}",  # output folder
                       "--mission", "true",  # Mission mode TRUE
@@ -110,6 +110,9 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
     logger = Logger.Logger(logger_filepath=None, verbose=verbose, dump=True)
 
     while True:
+        # Info
+        logger.print_msg(f"Calling photographer with arguments: {detection_args}")
+
         # Call to main photographer detector
         detection_dict_flags = photographer.photographer_launcher(detection_args, logger=logger)
 
@@ -141,6 +144,7 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
         if not restart_photo:
             break
         else:
+            logger.print_msg(f"Setting next photo id starting from: {photo_id}")
             detection_args[-1] = f"{photo_id}"
 
 
