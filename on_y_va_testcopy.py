@@ -35,7 +35,7 @@ async def main(verbose: bool = True):
             # Show banner
             tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
 
-            # Exit async
+            # Exit async.
             break
 
     # Info...
