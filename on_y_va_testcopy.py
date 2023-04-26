@@ -1,4 +1,4 @@
-gimport asyncio
+import asyncio
 import mavsdk
 import banners
 import datetime
