@@ -93,46 +93,55 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
     # Get time formatted as a string
     mission_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 
+    # Photo id offset
+    photo_id = 0
+
     # Prepare arguments for photographer
     detection_args = ["dummy",
                       "--max_time", "3600",  # time [seconds]
                       "--output", f"/home/pi/mission_{mission_time}",  # output folder
                       "--mission", "true",  # Mission mode TRUE
                       "--verbose", f"{verbose}"  # Verbose mode enabled?
+                      "--do_break", f"True"  # Do break? Yes
+                      "--offset", photo_id  # Verbose mode enabled?
                       ]
 
     # Auxiliar logger
     logger = Logger.Logger(logger_filepath=None, verbose=verbose, dump=True)
 
-    # Call to main photographer detector
-    detection_dict_flags = photographer.photographer_launcher(detection_args, logger=logger)
+    while True:
+        # Call to main photographer detector
+        detection_dict_flags = photographer.photographer_launcher(detection_args, logger=logger)
 
-    # Safety check it is not an empty dictionary
-    not_empty = bool(detection_dict_flags)
+        # Safety check it is not an empty dictionary
+        not_empty = bool(detection_dict_flags)
 
-    # Check for emptiness
-    if not not_empty:
-        logger.print_msg(f"Returned dictionary is empty! Something went wrong! Exiting function...")
-        return
+        # Check for emptiness
+        if not not_empty:
+            logger.print_msg(f"Returned dictionary is empty! Something went wrong! Exiting function...")
+            break
 
-    # Recover flags from the dictionary
-    detected = detection_dict_flags["detected"]
-    photo_id = detection_dict_flags["id"]
+        # Recover flags from the dictionary
+        detected = detection_dict_flags["detected"]
+        photo_id = detection_dict_flags["id"] + 1
+        keyboard_interrupt = detection_dict_flags["interrupt"]
 
-    # Check return flag
-    if detected and actuate:
-        logger.print_msg("Aruco marker detected!, Actioning trapdoor...")
+        # If keyboard interrupt, stop
+        if keyboard_interrupt:
+            break
 
-        # Action trapdoor
-        raspi_servo_simple.main(logger=logger)
+        # Check return flag
+        if detected and actuate:
+            logger.print_msg("Aruco marker detected!, Actioning trapdoor...")
 
-    # If keep, continuo taking pictures
-    if restart_photo:
-        detection_args.append("--do_break")
-        detection_args.append(f"False")
-        detection_args.append("--offset")
-        detection_args.append(f"{photo_id + 1}")
-        photographer.photographer_launcher(detection_args, logger)
+            # Action trapdoor
+            raspi_servo_simple.main(logger=logger)
+
+        # If keep, continuo taking pictures
+        if not restart_photo:
+            break
+        else:
+            detection_args[-1] = photo_id
 
 
 async def print_status_text(drone, verbose: bool):

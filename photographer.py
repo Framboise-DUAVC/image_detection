@@ -163,11 +163,15 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
 
     # If mission mode, exit rapidly and return flag==1
     if mission:
-        if detection_dict_flags["detected"]:
+        if detection_dict_flags["detected"] and not detection_dict_flags["interrupt"]:
             return detection_dict_flags
+        elif detection_dict_flags["detected"] and detection_dict_flags["interrupt"]:
+            logger.print_msg(f"Aruco was detected but keyboard interruption!")
         else:
-            logger.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function and returning "
-                             f"empty dictionary...", )
+            logger.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds.")
+
+        # Info
+        logger.print_msg(f"Exiting function and returning empty dictionary...")
 
     # If it is not mission mode, then convert numpy to jpg
     tools.convert_numpy_to_jpg(output, logger=logger)
@@ -187,6 +191,7 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
     # Aruco detected?
     aruco_detected = False
     aruco_photo_id = -1
+    signal_interrupt = False
 
     # Start time counter
     start_time = datetime.datetime.now()
@@ -260,6 +265,7 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                 # In case of Ctr+C, brake the loop
                 if Sentry:
                     logger.print_msg(f"Safely getting out of the main loop!")
+                    signal_interrupt = True
                     break
 
         finally:
@@ -268,7 +274,8 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
     # Result dictionary
     result = {
         "detected": aruco_detected,
-        "id": aruco_photo_id
+        "id": aruco_photo_id,
+        "interrupt": signal_interrupt
     }
 
     # Return boolean
