@@ -76,14 +76,11 @@ class Logger:
             self.print_msg(f"Not dumping in any file, logger file is set to None...")
             return
 
-            # Should we append or brand new write?
+        # Should we append or brand new write?
         self.__how_write = self.__append if self.__log_exists else self.__write
 
         # Info
-        msg2write = "append file" if self.__append else "write file"
-
-        # Info
-        self.print_msg(f"File will be wrote: {msg2write}")
+        self.print_msg(f"File will be wrote in mode: '{self.__how_write}'.")
 
         if not os.path.exists(self.__log_dir):
             # Info
@@ -121,7 +118,7 @@ class Logger:
         self.__log_filepath = logger_filepath
 
         # Info
-        self.print_msg(f"Updated logger path: {self.__log_filepath}")
+        self.print_msg(f"Updated logger filepath: {self.__log_filepath}")
 
         # Filepath checks and subsequent updates
         self.__logpath_safety_checks()
