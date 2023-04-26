@@ -40,17 +40,17 @@ async def main(verbose: bool = True):
 
     # Info...
     tools.simple_print_msg("-- Arming", verbose=verbose)
-
+    tools.simple_print_msg("test for mav", verbose=verbose)
     # Arm
-    await drone.action.arm()
+    #await drone.action.arm()
 
     # Get the flight mode
-    async for flight_mode in drone.telemetry.flight_mode():
+    #async for flight_mode in drone.telemetry.flight_mode():
         # Display flight mode
-        tools.simple_print_msg(f"-- FlightMode: {str(flight_mode)}", verbose=verbose)
+     #   tools.simple_print_msg(f"-- FlightMode: {str(flight_mode)}", verbose=verbose)
 
     # Status check
-    status_text_task.cancel()
+    #status_text_task.cancel()
 
 
 async def print_status_text(drone, verbose: bool):
