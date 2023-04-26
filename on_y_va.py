@@ -102,7 +102,7 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
                       ]
 
     # Auxiliar logger
-    logger = Logger.Logger(logger_filepath=None, verbose=verbose, dump=False)
+    logger = Logger.Logger(logger_filepath=None, verbose=verbose, dump=True)
 
     # Call to main photographer detector
     detection_dict_flags = photographer.photographer_launcher(detection_args, logger=logger)
