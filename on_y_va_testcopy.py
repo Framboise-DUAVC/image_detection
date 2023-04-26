@@ -41,6 +41,11 @@ async def main(verbose: bool = True):
     # Info...
     tools.simple_print_msg("-- Arming", verbose=verbose)
 
+    # Arm
+    await drone.action.arm()
+
+    drone.offboard.Attitude(0, -20, 0, 0)
+
     # Create the connection to the top-side computer as companion computer/autopilot
     master = mavutil.mavlink_connection('udpout:localhost:14550', source_system=1)
 
