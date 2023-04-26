@@ -56,6 +56,9 @@ async def main(verbose: bool = True):
     # Arm
     await drone.action.arm()
 
+    drone.offboard.Attitude(0, -20, 0, 0)
+
+
     # Info
     tools.simple_print_msg("-- Taking off", verbose=verbose)
 
