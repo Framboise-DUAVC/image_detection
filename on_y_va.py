@@ -1,5 +1,7 @@
 import asyncio
 import mavsdk
+
+import Logger
 import banners
 import datetime
 
@@ -13,7 +15,7 @@ async def main(verbose: bool = True):
     drone = mavsdk.System()
 
     # Show info
-    tools.print_msg("Trying to connect...", verbose=verbose)
+    tools.simple_print_msg("Trying to connect...", verbose=verbose)
 
     # Drone is in serial0
     await drone.connect(system_address="serial:///dev/serial0:921600")
@@ -22,57 +24,57 @@ async def main(verbose: bool = True):
     status_text_task = asyncio.ensure_future(print_status_text(drone, verbose=verbose))
 
     # Info...
-    tools.print_msg("Waiting for drone to connect...", verbose=verbose)
+    tools.simple_print_msg("Waiting for drone to connect...", verbose=verbose)
 
     # Get connection state
     async for state in drone.core.connection_state():
         if state.is_connected:
             # Info if connected
-            tools.print_msg(f"-- Connected to drone!", verbose=verbose)
+            tools.simple_print_msg(f"-- Connected to drone!", verbose=verbose)
 
             # Show banner
-            tools.print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
+            tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
 
             # Exit async
             break
 
     # Info
-    tools.print_msg("Waiting for drone to have a global position estimate...", verbose=verbose)
+    tools.simple_print_msg("Waiting for drone to have a global position estimate...", verbose=verbose)
 
     # Check GPS
     async for health in drone.telemetry.health():
         if health.is_global_position_ok and health.is_home_position_ok:
             # Info
-            tools.print_msg("-- Global position estimate OK", verbose=verbose)
+            tools.simple_print_msg("-- Global position estimate OK", verbose=verbose)
 
             # Exit async
             break
 
     # Info...
-    tools.print_msg("-- Arming", verbose=verbose)
+    tools.simple_print_msg("-- Arming", verbose=verbose)
 
     # Arm
     await drone.action.arm()
 
     # Info
-    tools.print_msg("-- Taking off", verbose=verbose)
+    tools.simple_print_msg("-- Taking off", verbose=verbose)
 
     # Take off
     await drone.action.takeoff()
 
     # Info
-    tools.print_msg("-- Waiting for cruise altitude...", verbose=verbose)
+    tools.simple_print_msg("-- Waiting for cruise altitude...", verbose=verbose)
 
     # Get the flight mode
     async for flight_mode in drone.telemetry.flight_mode():
 
         # Display flight mode
-        tools.print_msg(f"-- FlightMode: {str(flight_mode)}", verbose=verbose)
+        tools.simple_print_msg(f"-- FlightMode: {str(flight_mode)}", verbose=verbose)
 
         # TODO: Change here what the mode will be when starting to do photos
         if str(flight_mode).strip().lower() == "mission":
             # Show info
-            tools.print_msg("-- Starting photographer...", verbose=verbose)
+            tools.simple_print_msg("-- Starting photographer...", verbose=verbose)
 
             # Call to detection and action
             detection_and_action(restart_photo=False, actuate=True, verbose=verbose)
@@ -80,7 +82,7 @@ async def main(verbose: bool = True):
             break
 
     # Landing
-    tools.print_msg("-- Landing", verbose=verbose)
+    tools.simple_print_msg("-- Landing", verbose=verbose)
     await drone.action.land()
 
     # Status check
@@ -99,15 +101,18 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
                       "--verbose", f"{verbose}"  # Verbose mode enabled?
                       ]
 
+    # Auxiliar logger
+    logger = Logger.Logger(logger_filepath=None, verbose=verbose, dump=False)
+
     # Call to main photographer detector
-    detection_dict_flags = photographer.main(detection_args)
+    detection_dict_flags = photographer.photographer_launcher(detection_args, logger=logger)
 
     # Safety check it is not an empty dictionary
     not_empty = bool(detection_dict_flags)
 
     # Check for emptiness
     if not not_empty:
-        tools.print_msg(f"Returned dictionary is empty! Something went wrong! Exiting function...", verbose=verbose)
+        logger.print_msg(f"Returned dictionary is empty! Something went wrong! Exiting function...")
         return
 
     # Recover flags from the dictionary
@@ -116,10 +121,10 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
 
     # Check return flag
     if detected and actuate:
-        tools.print_msg("Aruco marker detected!, Actioning trapdoor...", verbose=verbose)
+        logger.print_msg("Aruco marker detected!, Actioning trapdoor...")
 
         # Action trapdoor
-        raspi_servo_simple.main(verbose=verbose)
+        raspi_servo_simple.main(logger=logger)
 
     # If keep, continuo taking pictures
     if restart_photo:
@@ -127,13 +132,13 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
         detection_args.append(f"False")
         detection_args.append("--offset")
         detection_args.append(f"{photo_id + 1}")
-        photographer.main(detection_args)
+        photographer.photographer_launcher(detection_args, logger)
 
 
 async def print_status_text(drone, verbose: bool):
     try:
         async for status_text in drone.telemetry.status_text():
-            tools.print_msg(f"Status: {status_text.type}: {status_text.text}", verbose=verbose)
+            tools.simple_print_msg(f"Status: {status_text.type}: {status_text.text}", verbose=verbose)
     except asyncio.CancelledError:
         return
 

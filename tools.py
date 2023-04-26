@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import cv2
+import Logger
+
 
 def parse_arguments(args, verbose=False):
     """
@@ -37,16 +39,16 @@ def parse_arguments(args, verbose=False):
     return parsed_dict
 
 
-def convert_numpy_to_jpg(dirpath: os.PathLike or str, verbose: bool) -> None:
+def convert_numpy_to_jpg(dirpath: os.PathLike or str, logger: Logger) -> None:
     # Safety check that the directory exists
     if os.path.exists(dirpath):
-        print_msg(f"Accessing directory...: {dirpath}", verbose=verbose)
+        logger.print_msg(f"Accessing directory...: {dirpath}")
     else:
         # Info, returning without doing any change
-        print_msg(f"ERROR: Couldn't open directory! Ensure path exist: {dirpath}", verbose=verbose)
+        logger.print_msg(f"ERROR: Couldn't open directory! Ensure path exist: {dirpath}")
 
         # Exit function
-        print_msg(f"ERROR: Exiting function...", verbose=verbose)
+        logger.print_msg(f"ERROR: Exiting function...")
 
         # Exit!
         return
@@ -55,7 +57,7 @@ def convert_numpy_to_jpg(dirpath: os.PathLike or str, verbose: bool) -> None:
     np_files = os.listdir(dirpath)
 
     # Info
-    print_msg("Converting numpy files to jpg files...", verbose=verbose)
+    logger.print_msg("Converting numpy files to jpg files...")
 
     # Convert files
     for np_file in np_files:
@@ -71,9 +73,9 @@ def convert_numpy_to_jpg(dirpath: os.PathLike or str, verbose: bool) -> None:
             os.remove(np_filepath)
 
     # Info
-    print_msg("All files converted!", verbose=verbose)
+    logger.print_msg("All files converted!")
 
 
-def print_msg(msg: str, verbose: bool):
+def simple_print_msg(msg: str, verbose: bool):
     if verbose:
         print(msg)

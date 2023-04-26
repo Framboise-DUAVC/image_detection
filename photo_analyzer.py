@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
     trigger = False
@@ -21,15 +22,16 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
         # Window shown waits for any key pressing event
         # Window shown waits for any key pressing event
         # Window shown waits for any key pressing event
-        
+
         cv2.destroyAllWindows()
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
     parameters = cv2.aruco.DetectorParameters_create()
-    #cv2.aruco.Dictionary_readDictionary(1, dictionary)
+    # cv2.aruco.Dictionary_readDictionary(1, dictionary)
     # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
     # print(dictionary)
-    markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(gray_image, dictionary, parameters=parameters)
+    markerCorners, markerIds, rejectedCandidates = cv2.aruco.detectMarkers(gray_image, dictionary,
+                                                                           parameters=parameters)
     # frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
 
     if markerIds is not None:
@@ -49,9 +51,9 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
                     x = points[:, 1]
                     plt.plot(x, y, ".m-", linewidth = 1.)"""
         # plt.legend()
-        #if show:
+        # if show:
         #    # plt.show()
-        #if output is not None:
+        # if output is not None:
         #    # plt.savefig(output)
 
     # Save the image

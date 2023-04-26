@@ -1,11 +1,12 @@
 import csv
-import glob
 import time
 import datetime
 from picamera.array import PiRGBArray
 import picamera
 import os
 import sys
+
+import Logger
 import tools
 import signal
 
@@ -18,10 +19,11 @@ Sentry = False
 
 
 def SignalHandler_SIGINT(SignalNumber, Frame):
-    tools.print_msg(f"", True)
-    tools.print_msg(f"Keyboard interruption detected!", True)
+    print(f"")
+    print(f"Keyboard interruption detected!")
     global Sentry
     Sentry = True
+
 
 # Set what function to use in case of Ctr+C event
 signal.signal(signal.SIGINT, SignalHandler_SIGINT)
@@ -36,28 +38,27 @@ def usage():
            "\n"
 
 
-def safety_check_args(args_dict):
+def safety_check_args(args_dict: dict, logger: Logger.Logger):
     # Safety check mandatory arguments
     mandatory_names = [("max_time", int), ("mission", str)]
 
     for arg_mandatory in mandatory_names:
         if arg_mandatory[0] not in args_dict:
-            tools.print_msg(f"Argument --{arg_mandatory[0]} is mandatory! Please provide it.", verbose=True)
+            logger.print_msg(f"Argument --{arg_mandatory[0]} is mandatory! Please provide it.")
             usage()
             exit(-1)
         else:
             try:
                 trial = arg_mandatory[1](args_dict[arg_mandatory[0]])
             except Exception as e:
-                tools.print_msg(f"Argument --{arg_mandatory[0]} could not be parsed. Please follow the format.",
-                                verbose=True)
-                tools.print_msg("---Error Follows---", verbose=True)
-                tools.print_msg(f"{e.__str__()}", verbose=True)
+                logger.print_msg(f"Argument --{arg_mandatory[0]} could not be parsed. Please follow the format.")
+                logger.print_msg("---Error Follows---")
+                logger.print_msg(f"{e.__str__()}")
                 usage()
                 exit(-1)
 
 
-def worker_photo_analyzer(proc_num, frame, filename, id_wanted, show=False, output=None, verbose=True) -> dict:
+def worker_photo_analyzer(proc_num, frame, filename, id_wanted, logger: Logger, show=False, output=None) -> dict:
     # Start time
     start = time.time()
 
@@ -77,29 +78,13 @@ def worker_photo_analyzer(proc_num, frame, filename, id_wanted, show=False, outp
     result_dict["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Print info
-    tools.print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}", verbose)
+    logger.print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}")
 
     # Insert to the queue
     return result_dict
 
 
-def worker_check_triggers(jobs_return_dict_last_obj, threshold, escape, verbose):
-    # Counter of triggers
-    counter = 0
-
-    if not escape:
-        has_marker = jobs_return_dict_last_obj.get_has_marker()
-
-        if has_marker:
-            counter += 1
-
-        if counter >= threshold:
-            if verbose:
-                tools.print_msg(f"Marker detected '{counter}' times!", verbose)
-            escape = True
-
-
-def main(args: []) -> dict:
+def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
     # Safety check
     if len(args) == 0:
         print(f"ERROR: No arguments passed!")
@@ -113,7 +98,7 @@ def main(args: []) -> dict:
     verbose = args_dict["verbose"].lower() == "true" if "verbose" in args_dict else False
 
     # Ensure arguments
-    safety_check_args(args_dict)
+    safety_check_args(args_dict, logger)
 
     # Set the arguments
     max_time = int(args_dict["max_time"])
@@ -122,6 +107,10 @@ def main(args: []) -> dict:
     mission = True if args_dict["mission"].lower() == "true" else False
     offset = int(args_dict["offset"]) if "offset" in args_dict else 0
     output = os.path.abspath(output)
+
+    # Set the logger options
+    logger.update_verbosity(verbosity=verbose)
+    logger.update_logpath(logger_filepath=os.path.join(output, "python_logger.log"))
 
     # Do break? OPTIONAL ARGUMENTS
     do_break = True
@@ -132,20 +121,20 @@ def main(args: []) -> dict:
     if not os.path.exists(output):
         # Create absolute path
         os.mkdir(output)
-        tools.print_msg(f"Successfully created output directory: {output}", verbose)
+        logger.print_msg(f"Successfully created output directory: {output}")
     else:
-        tools.print_msg(f"Directory previously existing, not overriding: {output}", verbose)
+        logger.print_msg(f"Directory previously existing, not overriding: {output}")
 
     # Append here the processes
     jobs_return_dict = {}
 
     # Print info
     if offset == 0:
-        tools.print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time", verbose)
+        logger.print_msg(f"Proc. num. | Filename | Marker detected | Elapsed time")
 
     # Here we can either call CAPTURE_CONTINUOUS or TBD: CAPTURE_VIDEO
     detection_dict_flags = continuous_capture(jobs_return_dict, output, show, max_time,
-                                              verbose=verbose,
+                                              logger=logger,
                                               mission=mission,
                                               do_break=do_break,
                                               offset=offset)
@@ -156,7 +145,7 @@ def main(args: []) -> dict:
 
     # Info
     if summary_exists:
-        tools.print_msg(f"Summary file already exists!, Appending data to it... File: {summary_path}", verbose=verbose)
+        logger.print_msg(f"Summary file already exists!, Appending data to it... File: {summary_path}")
 
     with open(summary_path, "a" if summary_exists else "w") as fcsv:
         csvwriter = csv.writer(fcsv)
@@ -177,22 +166,21 @@ def main(args: []) -> dict:
         if detection_dict_flags["detected"]:
             return detection_dict_flags
         else:
-            tools.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function and returning"
-                            f"empty dictionary...",
-                            verbose=verbose)
+            logger.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function and returning"
+                             f"empty dictionary...", )
             return {}
 
     # If it is not mission mode, then convert numpy to jpg
-    tools.convert_numpy_to_jpg(output, verbose=verbose)
+    tools.convert_numpy_to_jpg(output, logger=logger)
 
     # Info
-    tools.print_msg("All done!", verbose=verbose)
+    logger.print_msg("All done!")
 
     # Return
     return {}
 
 
-def continuous_capture(result_dict, output, show, max_time, verbose=True, mission=False, do_break=True,
+def continuous_capture(result_dict, output, show, max_time, logger, mission=False, do_break=True,
                        offset=0) -> dict:
     # Set counter
     i = offset
@@ -204,7 +192,7 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
     # Start time counter
     start_time = datetime.datetime.now()
 
-    tools.print_msg("Starting continuous capture...", verbose)
+    logger.print_msg("Starting continuous capture...")
     with picamera.PiCamera() as camera:
         camera.start_preview()
         # camera.resolution = (640, 480)
@@ -220,7 +208,7 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
                 filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.npy")
 
                 # Build arguments
-                job1_args = (i, image, filename, 7, show, filename.replace('.jpg', '-Analyzed.jpg'), verbose)
+                job1_args = (i, image, filename, 7, logger, show, filename.replace('.jpg', '-Analyzed.jpg'))
 
                 # Launch process to evaluate image
                 result_dict[i] = worker_photo_analyzer(*job1_args)
@@ -239,7 +227,7 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
                         else:
                             msg2print += f"Keeping in photographer loop..."
 
-                        tools.print_msg(f"{msg2print}", verbose=verbose)
+                        logger.print_msg(f"{msg2print}")
 
                         # Set aruco detected to True
                         aruco_detected = True
@@ -262,7 +250,7 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
 
                 # In case of Ctr+C, brake the loop
                 if Sentry:
-                    tools.print_msg(f"Safely getting out of the main loop!", verbose=verbose)
+                    logger.print_msg(f"Safely getting out of the main loop!")
                     break
 
         finally:
@@ -278,6 +266,14 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
     return result
 
 
+def main():
+    # Set fast logger
+    logger = Logger.Logger(logger_filepath=None, verbose=True, dump=False)
+
+    # Call main running function
+    photographer_launcher(sys.argv[1:] if len(sys.argv[1:]) > 1 else [], logger=logger)
+
+
 if __name__ == '__main__':
     # Call main running function
-    main(sys.argv[1:] if len(sys.argv[1:]) > 1 else [])
+    main()
