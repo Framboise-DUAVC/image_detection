@@ -105,7 +105,7 @@ class Logger:
 
     def __save_msg(self, msg: str):
         # Save the message in the archive
-        self.__archive.append(msg)
+        self.__archive.append(msg + "\n")
 
     def print_msg(self, msg: str):
         # If verbose mode, display the message
