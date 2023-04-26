@@ -7,12 +7,24 @@ import picamera
 import os
 import sys
 import tools
-import numpy as np
-import cv2
+import signal
 
 # Project libraries
 import PhotoInfo
 import photo_analyzer
+
+# Global variable: Signal Entry (Sentry) <-- If someone Ctrl+C --> Sentry == False
+Sentry = False
+
+
+def SignalHandler_SIGINT(SignalNumber, Frame):
+    tools.print_msg(f"", True)
+    tools.print_msg(f"Keyboard interruption detected!", True)
+    global Sentry
+    Sentry = True
+
+# Set what function to use in case of Ctr+C event
+signal.signal(signal.SIGINT, SignalHandler_SIGINT)
 
 
 def usage():
@@ -165,7 +177,8 @@ def main(args: []) -> dict:
         if detection_dict_flags["detected"]:
             return detection_dict_flags
         else:
-            tools.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function...",
+            tools.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function and returning"
+                            f"empty dictionary...",
                             verbose=verbose)
             return {}
 
@@ -246,6 +259,11 @@ def continuous_capture(result_dict, output, show, max_time, verbose=True, missio
 
                 rawCapture.truncate(0)
                 i += 1
+
+                # In case of Ctr+C, brake the loop
+                if Sentry:
+                    tools.print_msg(f"Safely getting out of the main loop!", verbose=verbose)
+                    break
 
         finally:
             camera.stop_preview()
