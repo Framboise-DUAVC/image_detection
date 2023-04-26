@@ -45,7 +45,7 @@ async def main(verbose: bool = True):
     master = pymavlink.mavutil.mavlink_connection('udpout:localhost:921600', source_system=1)
 
     # Send a message for QGC to read out loud
-    #  Severity from https://mavlink.io/en/messages/common.html#MAV_SEVERITY
+    # Severity from https://mavlink.io/en/messages/common.html#MAV_SEVERITY
     master.mav.statustext_send(pymavlink.mavutil.mavlink.MAV_SEVERITY_NOTICE,
                                "image detected".encode())
 
