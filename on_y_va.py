@@ -101,8 +101,8 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
                       "--max_time", "3600",  # time [seconds]
                       "--output", f"/home/pi/mission_{mission_time}",  # output folder
                       "--mission", "true",  # Mission mode TRUE
-                      "--verbose", f"{verbose}"  # Verbose mode enabled?
-                      "--do_break", f"True"  # Do break? Yes
+                      "--verbose", f"{verbose}",  # Verbose mode enabled?
+                      "--do_break", f"True",  # Do break? Yes
                       "--offset", f"{photo_id}"  # Verbose mode enabled?
                       ]
 
