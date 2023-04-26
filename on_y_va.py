@@ -103,7 +103,7 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
                       "--mission", "true",  # Mission mode TRUE
                       "--verbose", f"{verbose}"  # Verbose mode enabled?
                       "--do_break", f"True"  # Do break? Yes
-                      "--offset", photo_id  # Verbose mode enabled?
+                      "--offset", f"{photo_id}"  # Verbose mode enabled?
                       ]
 
     # Auxiliar logger
@@ -141,7 +141,7 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
         if not restart_photo:
             break
         else:
-            detection_args[-1] = photo_id
+            detection_args[-1] = f"{photo_id}"
 
 
 async def print_status_text(drone, verbose: bool):
