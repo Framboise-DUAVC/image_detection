@@ -166,9 +166,8 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
         if detection_dict_flags["detected"]:
             return detection_dict_flags
         else:
-            logger.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function and returning"
+            logger.print_msg(f"Aruco couldn't be detected after '{max_time}' seconds. Exiting function and returning "
                              f"empty dictionary...", )
-            return {}
 
     # If it is not mission mode, then convert numpy to jpg
     tools.convert_numpy_to_jpg(output, logger=logger)
