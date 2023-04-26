@@ -78,7 +78,7 @@ def worker_photo_analyzer(proc_num, frame, filename, id_wanted, logger: Logger, 
     result_dict["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Print info
-    logger.print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}")
+    logger.print_msg(f"{proc_num} | {filename} | {has_marker} | {'{:.5f}'.format(elapsed)}")
 
     # Insert to the queue
     return result_dict
