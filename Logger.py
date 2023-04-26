@@ -39,6 +39,11 @@ class Logger:
         self.__dump()
 
     def __logpath_safety_checks(self):
+        if self.__log_filepath is None:
+            self.print_msg(f"Logger file is None!, Skipping checks...")
+            return
+
+        # Get directory name
         self.__log_dir = os.path.dirname(self.__log_filepath)
 
         # Is the filepath existing
