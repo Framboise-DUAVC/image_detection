@@ -188,6 +188,12 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
     # Set counter
     i = offset
 
+    # Shutter indexes for testing
+    shutt_idx = 1
+
+    # Set the array
+    shutters_array = range(150, 22500, 100)
+
     # Aruco detected?
     aruco_detected = False
     aruco_photo_id = -1
@@ -219,7 +225,7 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                 # and occupied/unoccupied text
                 image = frame.array
 
-                filename = os.path.join(output, f"raspy_{str(i).zfill(10)}.npy")
+                filename = os.path.join(output, f"raspy_exp_id_{str(i).zfill(10)}_exp_{camera.shutter_speed}.npy")
 
                 # Build arguments
                 job1_args = (i, image, filename, 7, logger, show, filename.replace('.jpg', '-Analyzed.jpg'))
@@ -267,6 +273,16 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                     logger.print_msg(f"Safely getting out of the main loop!")
                     signal_interrupt = True
                     break
+
+                # Modify the shutter speed
+                camera.shutter_speed = shutters_array[shutt_idx]
+
+                # Go next value
+                shutt_idx += 1
+
+                # Check overshoot
+                if shutt_idx > len(shutters_array) - 1:
+                    shutt_idx = 0
 
         finally:
             camera.stop_preview()
