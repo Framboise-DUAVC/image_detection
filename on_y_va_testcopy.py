@@ -42,7 +42,7 @@ async def main(verbose: bool = True):
     tools.simple_print_msg("-- Arming", verbose=verbose)
 
     # Create the connection to the top-side computer as companion computer/autopilot
-    master = mavutil.mavlink_connection('udpout:localhost:921600', source_system=1)
+    master = mavutil.mavlink_connection('udpout:localhost:14550', source_system=1)
 
     # Send a message for QGC to read out loud
     # Severity from https://mavlink.io/en/messages/common.html#MAV_SEVERITY
