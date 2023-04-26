@@ -278,7 +278,8 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                 camera.shutter_speed = shutters_array[shutt_idx]
 
                 # Go next value
-                shutt_idx += 1
+                if i % 20 == 0:
+                    shutt_idx += 1
 
                 # Check overshoot
                 if shutt_idx > len(shutters_array) - 1:
