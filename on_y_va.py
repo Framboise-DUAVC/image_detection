@@ -114,7 +114,7 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
         logger.print_msg(f"Calling photographer with arguments:")
 
         # Info
-        for arg, i in enumerate(detection_args):
+        for i, arg in enumerate(detection_args):
             logger.print_msg(f"\t -> {i}: {arg}")
 
         # Info
