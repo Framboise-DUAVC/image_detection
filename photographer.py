@@ -195,7 +195,16 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
     with picamera.PiCamera() as camera:
         camera.start_preview()
         # camera.resolution = (640, 480)
-        # camera.framerate = 32
+        logger.print_msg(f"Current framerate: {camera.framerate}")
+        logger.print_msg(f"Current shutter_speed: {camera.shutter_speed}")
+        camera.framerate = 1 / 9
+        camera.shutter_speed = 33000  # 150 ... to .... 9000000
+        logger.print_msg(f"Set framerate: {camera.framerate}")
+        logger.print_msg(f"Set shutter_speed: {camera.shutter_speed}")
+
+        # Check exposure speed
+        logger.print_msg(f"Current exposure speed: {camera.exposure_speed}")
+
         rawCapture = PiRGBArray(camera, size=(camera.resolution[0], camera.resolution[1]))
         try:
             # capture frames from the camera
