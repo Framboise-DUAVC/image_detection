@@ -78,7 +78,7 @@ def worker_photo_analyzer(proc_num, frame, filename, id_wanted, logger: Logger, 
     result_dict["date"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Print info
-    logger.print_msg(f"{proc_num} | {filename} | {has_marker} | {elapsed}")
+    logger.print_msg(f"{proc_num} | {filename} | {has_marker} | {'{:.5f}'.format(elapsed)}")
 
     # Insert to the queue
     return result_dict
@@ -278,7 +278,8 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                 camera.shutter_speed = shutters_array[shutt_idx]
 
                 # Go next value
-                shutt_idx += 1
+                if i % 20 == 0:
+                    shutt_idx += 1
 
                 # Check overshoot
                 if shutt_idx > len(shutters_array) - 1:
