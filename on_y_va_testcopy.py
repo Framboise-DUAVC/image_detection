@@ -8,7 +8,7 @@ import datetime
 import photographer
 import tools
 import raspi_servo_simple
-
+import pymavlink
 
 async def main(verbose: bool = True):
     # Get drone object and then try to connect
@@ -40,17 +40,14 @@ async def main(verbose: bool = True):
 
     # Info...
     tools.simple_print_msg("-- Arming", verbose=verbose)
-    tools.simple_print_msg("test for mav", verbose=verbose)
-    # Arm
-    #await drone.action.arm()
 
-    # Get the flight mode
-    #async for flight_mode in drone.telemetry.flight_mode():
-        # Display flight mode
-     #   tools.simple_print_msg(f"-- FlightMode: {str(flight_mode)}", verbose=verbose)
+    # Create the connection to the top-side computer as companion computer/autopilot
+    master = pymavlink.mavutil.mavlink_connection('udpout:localhost:921600', source_system=1)
 
-    # Status check
-    #status_text_task.cancel()
+    # Send a message for QGC to read out loud
+    #  Severity from https://mavlink.io/en/messages/common.html#MAV_SEVERITY
+    master.mav.statustext_send(pymavlink.mavutil.mavlink.MAV_SEVERITY_NOTICE,
+                               "image detected".encode())
 
 
 async def print_status_text(drone, verbose: bool):
