@@ -1,4 +1,4 @@
-import asyncio
+gimport asyncio
 import mavsdk
 import banners
 import datetime
@@ -36,7 +36,7 @@ async def main(verbose: bool = True):
             # Exit async
             break
 
-    print('image captured')
+    tools.print_msg(f"image captured", verbose=verbose)
 
 
 if __name__ == '__main__':
