@@ -15,7 +15,7 @@ def set_angle(angle, pin_no, pwm):
     return
 
 
-def main(angle: int = 90, freq: int = 30, wait_time: int = 1, pin_num: int =32, logger: Logger.Logger = None):
+def main(angle: int = 45, freq: int = 30, wait_time: int = 5, pin_num: int =32, logger: Logger.Logger = None):
     # Other pins: power = 17, ground = 20
     RPi.GPIO.setmode(RPi.GPIO.BOARD)
     RPi.GPIO.setup(pin_num, RPi.GPIO.OUT)
