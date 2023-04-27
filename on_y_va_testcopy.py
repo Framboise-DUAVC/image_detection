@@ -8,6 +8,8 @@ import datetime
 import photographer
 import tools
 import raspi_servo_simple
+from mavsdk.server_utility import StatusTextType
+
 
 async def main(verbose: bool = True):
     # Get drone object and then try to connect
@@ -31,7 +33,7 @@ async def main(verbose: bool = True):
             # Info if connected
             tools.simple_print_msg(f"-- Connected to drone!", verbose=verbose)
             await drone.server_utility.send_status_text(
-                mavsdk.server_utility.StatusTextType.INFO, "IMAGE DETECTED!")
+                StatusTextType.INFO, "Hello world!")
             break
             # Show banner
             tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
