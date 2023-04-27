@@ -32,18 +32,11 @@ async def main(verbose: bool = True):
         if state.is_connected:
             # Info if connected
             tools.simple_print_msg(f"-- Connected to drone!", verbose=verbose)
-            await drone.server_utility.send_status_text(
-                StatusTextType.INFO, "Hello world!")
-            break
             # Show banner
             tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
 
-            flag = 1
-
-            if flag == 1:
-                await drone2.server_utility.send_status_text(
-                    StatusTextType.INFO, "image detected!")
-                break
+            await drone.server_utility.send_status_text(
+                StatusTextType.INFO, "IMAGE")
             # Exit async.
             break
 
