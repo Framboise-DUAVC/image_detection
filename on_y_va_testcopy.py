@@ -14,7 +14,9 @@ from mavsdk.server_utility import StatusTextType
 async def main(verbose: bool = True):
     # Get drone object and then try to connect
     drone = mavsdk.System()
+
     flag = 0
+
     # Show info
     tools.simple_print_msg("Trying to connect...", verbose=verbose)
 
@@ -27,14 +29,11 @@ async def main(verbose: bool = True):
     # Info...
     tools.simple_print_msg("Waiting for drone to connect...", verbose=verbose)
 
-    # Get connection state
     async for state in drone.core.connection_state():
         if state.is_connected:
             # Info if connected
             tools.simple_print_msg(f"-- Connected to drone!", verbose=verbose)
-            #await drone.server_utility.send_status_text(
-             #   StatusTextType.INFO, "Hello world!")
-            break
+
             # Show banner
             tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
 
@@ -43,8 +42,8 @@ async def main(verbose: bool = True):
             if flag == 1:
                 await drone.server_utility.send_status_text(
                     StatusTextType.INFO, "Image detected!")
-                break
-            # Exit async.
+
+            # Exit async
             break
 
     # Info...
