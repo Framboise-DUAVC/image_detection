@@ -36,8 +36,7 @@ async def main(verbose: bool = True):
             tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
 
             await drone.server_utility.send_status_text(
-                StatusTextType.INFO, "IMAGE DETECTED")
-
+                StatusTextType.INFO, "IMAGE")
             # Exit async.
             break
 
