@@ -53,10 +53,10 @@ async def main(verbose: bool = True):
             break
 
     # Info...
-    tools.simple_print_msg("-- Arming", verbose=verbose)
+    #tools.simple_print_msg("-- Arming", verbose=verbose)
 
     # Arm
-    await drone.action.arm()
+    #await drone.action.arm()
 
 
 async def print_status_text(drone, verbose: bool):
