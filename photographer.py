@@ -208,8 +208,8 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
         logger.print_msg(f"Current framerate: {camera.framerate}")
         logger.print_msg(f"Current shutter_speed: {camera.shutter_speed}")
         logger.print_msg(f"Current exposure speed: {camera.exposure_speed}")
-        camera.framerate = 24
-        camera.shutter_speed = 150  # 150 ... to .... 9000000
+        #camera.framerate = 24
+        #camera.shutter_speed = 150  # 150 ... to .... 9000000
         logger.print_msg(f"Set framerate: {camera.framerate}")
         logger.print_msg(f"Set shutter_speed: {camera.shutter_speed}")
 
@@ -274,7 +274,7 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                     break
 
                 # Modify the shutter speed
-                camera.shutter_speed = shutters_array[shutt_idx]
+                #camera.shutter_speed = shutters_array[shutt_idx]
 
                 # Go next value
                 if i % 20 == 0:
