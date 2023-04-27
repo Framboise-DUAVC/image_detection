@@ -8,11 +8,12 @@ import datetime
 import photographer
 import tools
 import raspi_servo_simple
-from pymavlink import mavutil
+from mavsdk.server_utility import StatusTextType
+
 
 async def main(verbose: bool = True):
     # Get drone object and then try to connect
-    drone = mavsdk.System()
+    drone = mavsdk.System(sysid=1)
 
     # Show info
     tools.simple_print_msg("Trying to connect...", verbose=verbose)
@@ -32,7 +33,7 @@ async def main(verbose: bool = True):
             # Info if connected
             tools.simple_print_msg(f"-- Connected to drone!", verbose=verbose)
             await drone.server_utility.send_status_text(
-                mavsdk.server_utility.StatusTextType.INFO, "IMAGE DETECTED!")
+                StatusTextType.INFO, "Hello world!")
             break
             # Show banner
             tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
@@ -45,16 +46,6 @@ async def main(verbose: bool = True):
 
     # Arm
     await drone.action.arm()
-
-    drone.offboard.attitude(0, -20, 0, 0)
-
-    # Create the connection to the top-side computer as companion computer/autopilot
-    master = mavutil.mavlink_connection('udpout:localhost:14550', source_system=1)
-
-    # Send a message for QGC to read out loud
-    # Severity from https://mavlink.io/en/messages/common.html#MAV_SEVERITY
-    master.mav.statustext_send(mavutil.mavlink.MAV_SEVERITY_NOTICE,
-                               "image detected".encode())
 
 
 async def print_status_text(drone, verbose: bool):
