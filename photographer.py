@@ -18,17 +18,6 @@ import photo_analyzer
 Sentry = False
 
 
-def SignalHandler_SIGINT(SignalNumber, Frame):
-    print(f"")
-    print(f"Keyboard interruption detected!")
-    global Sentry
-    Sentry = True
-
-
-# Set what function to use in case of Ctr+C event
-signal.signal(signal.SIGINT, SignalHandler_SIGINT)
-
-
 def usage():
     return "---Usage Follows---" \
            "\nphotographer.py --time <int> --freq <int> --output <string:OPTIONAL> --verbose <True/False:OPTIONAL>" \
@@ -90,6 +79,16 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
         print(f"ERROR: No arguments passed!")
         print(f"{usage()}")
         exit(-1)
+
+    def SignalHandler_SIGINT(SignalNumber, Frame):
+        print(f"")
+        print(f"Keyboard interruption detected!")
+        global Sentry
+        Sentry = True
+
+
+    # Set what function to use in case of Ctr+C event
+    signal.signal(signal.SIGINT, SignalHandler_SIGINT)
 
     # Set the arguments
     args_dict = tools.parse_arguments(args=args)
