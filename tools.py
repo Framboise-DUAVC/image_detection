@@ -65,10 +65,14 @@ def convert_numpy_to_jpg(dirpath: os.PathLike or str, logger: Logger) -> None:
             # Build filepath
             np_filepath = os.path.join(dirpath, np_file)
 
-            with open(np_filepath, 'rb') as f:
-                np_frame = np.load(f)
-                cv2.imwrite(np_filepath.replace(".npy", ".jpg"), np_frame)
-
+            try:
+                with open(np_filepath, 'rb') as f:
+                    np_frame = np.load(f)
+                    cv2.imwrite(np_filepath.replace(".npy", ".jpg"), np_frame)
+            except Exception as e:
+                print(f"Error with: {np_filepath}")
+                print(f"{e.__str__()}")
+                exit(-1)
             # Get rid of the numpy file
             os.remove(np_filepath)
 
