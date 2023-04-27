@@ -46,7 +46,7 @@ async def main(verbose: bool = True):
             flag = 1
 
             if flag == 1:
-                await drone.server_utility.send_status_text(
+                await drone2.server_utility.send_status_text(
                     StatusTextType.INFO, "image detected!")
                 break
             # Exit async.
