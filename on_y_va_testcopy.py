@@ -35,18 +35,14 @@ async def main(verbose: bool = True):
             # Show banner
             tools.simple_print_msg(f"{banners.get_px4_banner()}", verbose=verbose)
 
-            await drone.server_utility.send_status_text(
-                StatusTextType.INFO, "IMAGE")
-
-            flag = 1
-
-            if flag == 1:
-                await drone.server_utility.send_status_text(
-                    StatusTextType.INFO, "image detected!")
-
             # Exit async.
             break
 
+    flag = 1
+
+    if flag == 1:
+        await drone.server_utility.send_status_text(
+            StatusTextType.INFO, "IMAGE DETECTED")
     # Info...
     #tools.simple_print_msg("-- Arming", verbose=verbose)
 
