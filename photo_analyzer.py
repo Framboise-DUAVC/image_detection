@@ -41,6 +41,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
     if markerIds is not None:
         for id in markerIds:
             if id == id_wanted:
+                print(f"Aruco detected: {filename}")
                 trigger = True
 
     if show or output is not None:
@@ -59,6 +60,8 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
             plt.show()
         if output is not None:
             plt.savefig(output)
+            plt.cla()
+            plt.clf()
 
     return trigger
 
@@ -103,9 +106,10 @@ if __name__ == '__main__':
     # WARNING: Change this values if you want to analyze them...
     photo_test_huge_aruco_cardboard = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_cardboard"
     photo_test_huge_aruco_outside = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_outside"
+    photo_test_huge_aruco_MISSION_1 = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/mission_20230427_170253"
 
     # Call main function
     main(
-        general_path=photo_test_huge_aruco_outside,
+        general_path=photo_test_huge_aruco_MISSION_1,
         id_wanted=7,
         rotate=cv2.ROTATE_90_CLOCKWISE)
