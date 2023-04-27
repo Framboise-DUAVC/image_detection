@@ -191,7 +191,7 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
     shutt_idx = 1
 
     # Set the array
-    shutters_array = range(150, 22500, 1000)
+    shutters_array = range(100, 30000, 1000)
 
     # Aruco detected?
     aruco_detected = False
