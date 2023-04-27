@@ -11,7 +11,7 @@ import raspi_servo_simple
 
 async def main(verbose: bool = True):
     # Get drone object and then try to connect
-    drone = mavsdk.System()
+    drone = mavsdk.System(sysid=1)
 
     # Show info
     tools.simple_print_msg("Trying to connect...", verbose=verbose)
