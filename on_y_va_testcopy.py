@@ -41,8 +41,14 @@ async def main(verbose: bool = True):
     flag = 1
 
     if flag == 1:
-        await drone.server_utility.send_status_text(
-            StatusTextType.INFO, "IMAGE DETECTED")
+        async for state in drone.core.connection_state():
+            if state.is_connected:
+                await drone.server_utility.send_status_text(
+                    StatusTextType.INFO, "IMAGE DETECTED")
+
+                # Exit async.
+                break
+
     # Info...
     #tools.simple_print_msg("-- Arming", verbose=verbose)
 
