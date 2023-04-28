@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+good_ones = [7, 97, 216, 222, 62, 184]
 
 def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
@@ -36,7 +37,7 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
 
     if markerIds is not None:
         for id in markerIds:
-            if id == id_wanted:
+            if id in good_ones:
                 trigger = True
 
     if show or output is not None:

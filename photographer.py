@@ -209,11 +209,11 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
         logger.print_msg(f"Current shutter_speed: {camera.shutter_speed}")
         logger.print_msg(f"Current exposure speed: {camera.exposure_speed}")
         logger.print_msg(f"Current ISO: {camera.iso}")
-        #camera.framerate = 24
+        # camera.framerate = 24
         # Set the shutter speed to at least 1/800s
-        camera.shutter_speed = 1250
+        # camera.shutter_speed = 1250
         # Set the ISO to a low value, such as 100
-        camera.iso = 100
+        # camera.iso = 100
         logger.print_msg(f"Set framerate: {camera.framerate}")
         logger.print_msg(f"Set shutter_speed: {camera.shutter_speed}")
 
