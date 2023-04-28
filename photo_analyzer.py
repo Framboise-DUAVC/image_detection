@@ -19,6 +19,11 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
         cv2.imshow('Original', frame)
         cv2.waitKey(0)
 
+    #frame = cv2.normalize(frame, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
+    #if show:
+    #    cv2.imshow('Normalized', frame)
+    #    cv2.waitKey(0)
+    #
     # Use the cvtColor() function to grayscale the image
     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -107,9 +112,20 @@ if __name__ == '__main__':
     photo_test_huge_aruco_cardboard = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_cardboard"
     photo_test_huge_aruco_outside = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_outside"
     photo_test_huge_aruco_MISSION_1 = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/mission_20230427_170253"
+    photo_test_huge_aruco_MISSION_1_photo1 = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/mission_20230427_170253/raspy_exp_id_0000000479_exp_2240.jpg"
+    photo_test_huge_aruco_MISSION_1_photo2 = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/mission_20230427_170253/raspy_exp_id_0000000427_exp_2032.jpg"
+    photo_test_huge_aruco_MISSION_1_photo2_mod = "/home/bryan/Downloads/mission_20230427_170253/modified/raspy_exp_id_0000000427_exp_2032_mod.jpg"
+    photo_test_huge_aruco_MISSION_1_photo2_mod2 = "/home/bryan/Downloads/mission_20230427_170253/modified/raspy_exp_id_0000000427_exp_2032_mod2.jpg"
+
+    # Dir input
+    pathinput = photo_test_huge_aruco_MISSION_1_photo2_mod2
 
     # Call main function
-    main(
-        general_path=photo_test_huge_aruco_MISSION_1,
-        id_wanted=7,
-        rotate=cv2.ROTATE_90_CLOCKWISE)
+    if os.path.isdir(pathinput):
+        main(general_path=pathinput,
+            id_wanted=7,
+            rotate=cv2.ROTATE_90_CLOCKWISE)
+    else:
+        photo_analyzer(filename=pathinput,
+                       id_wanted=7,
+                       show=True)
