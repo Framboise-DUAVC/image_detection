@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-good_ones = [7, 97, 216, 222, 62, 184]
+good_ones = [7, 97, 216, 222, 184]
 
 def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
@@ -28,7 +28,7 @@ def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
     parameters = cv2.aruco.DetectorParameters_create()
-    parameters.errorCorrectionRate = 1.9
+    parameters.errorCorrectionRate = 2.0
     # cv2.aruco.Dictionary_readDictionary(1, dictionary)
     # detector = cv2.aruco.ArucoDetector(dictionary, parameters)
     # print(dictionary)
