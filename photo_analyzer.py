@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 
+good_ones = [7, 97, 216, 222, 62, 184]
 
 def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
     # Local auxiliary variable
@@ -19,25 +20,9 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
         cv2.imshow('Original', frame)
         cv2.waitKey(0)
 
-    kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
-    kernel = np.array([[0,-1,0], [-1,5,-1], [0,-1,0]])
-    kernel = np.array([[-1,-1,-1],
-                       [-1, 9,-1],
-                       [-1,-1,-1]])
-    sharpened = cv2.filter2D(frame, -1, kernel)
 
-    if show:
-        cv2.imshow('Sharpened', sharpened)
-        cv2.waitKey(0)
-
-
-    #frame = cv2.normalize(frame, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
-    #if show:
-    #    cv2.imshow('Normalized', frame)
-    #    cv2.waitKey(0)
-    #
     # Use the cvtColor() function to grayscale the image
-    gray_image = cv2.cvtColor(sharpened, cv2.COLOR_BGR2GRAY)
+    gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     if show:
         cv2.imshow('Grayscale', gray_image)
@@ -50,6 +35,13 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
 
     dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_250)
     parameters = cv2.aruco.DetectorParameters()
+
+    # Modify the parameters
+    print(f"Default: parameters.adaptiveThresholdConstant: {parameters.adaptiveThreshConstant}")
+    print(f"Default: parameters.errorCorrectionRate: {parameters.errorCorrectionRate}")
+    # parameters.adaptiveThreshConstant = 4
+    parameters.errorCorrectionRate = 1.9
+
     detector = cv2.aruco.ArucoDetector(dictionary, parameters)
 
     markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(gray_image)
@@ -57,7 +49,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
 
     if markerIds is not None:
         for id in markerIds:
-            if id == id_wanted:
+            if id in good_ones:
                 print(f"Aruco detected: {filename}")
                 trigger = True
 
@@ -262,18 +254,23 @@ if __name__ == '__main__':
     # WARNING: Change this values if you want to analyze them...
     photo_test_huge_aruco_cardboard = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_cardboard"
     photo_test_huge_aruco_outside = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/photo_test_huge_aruco_outside"
+    photo_test_huge_aruco_MISSION_0 = "/home/bryan/Downloads/testDay1/KshitijTest2/home/pi/mission_20230423_132310/raspy_0000000903.jpg"
     photo_test_huge_aruco_MISSION_1 = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/mission_20230427_170253"
     photo_test_huge_aruco_MISSION_1_photo1 = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/mission_20230427_170253/raspy_exp_id_0000000479_exp_2240.jpg"
     photo_test_huge_aruco_MISSION_1_photo2 = "/home/bryan/CLionProjects/ISAE/image_detection/test/out/mission_20230427_170253/raspy_exp_id_0000000427_exp_2032.jpg"
     photo_test_huge_aruco_MISSION_1_photo2_mod = "/home/bryan/Downloads/mission_20230427_170253/modified/raspy_exp_id_0000000427_exp_2032_mod.jpg"
     photo_test_huge_aruco_MISSION_1_photo2_mod2 = "/home/bryan/Downloads/mission_20230427_170253/modified/raspy_exp_id_0000000427_exp_2032_mod2.jpg"
+    photo_test_huge_aruco_MISSION_1_photo2_mod_simu_tape = "/home/bryan/Downloads/mission_20230427_170253/modified/raspy_exp_id_0000000427_exp_2032_mod_simul_tap.jpg"
+    photo_test_huge_aruco_MISSION_1_photo2_mod_simu_tape2 = "/home/bryan/Downloads/mission_20230427_170253/modified/raspy_exp_id_0000000427_exp_2032_mod_simul_tap2.jpg"
+    photo_test_huge_aruco_MISSION_1_photo2_mod_simu_sharpened_corner1 = "/home/bryan/Downloads/mission_20230427_170253/modified/raspy_exp_id_0000000427_exp_2032_mod_sharpened_corner1.jpg"
+
+    photo_test_huge_aruco_MISSION_2_phone_photo_trapdoor_test = "/home/bryan/Downloads/mission_20230429_000501"
+
+
+    photo_test_huge_aruco_MISSION_1_shantanu_god = "/home/bryan/Downloads/mission_20230427_170253/arucos"
 
     # Dir input
-    pathinput = photo_test_huge_aruco_MISSION_1_photo2
-
-    test4()
-
-    exit()
+    pathinput = "/home/bryan/Downloads/testDay1/KshitijTest4/home/pi/mission_20230423_133734/raspy_0000000612.jpg"
 
     # Call main function
     if os.path.isdir(pathinput):
