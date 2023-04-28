@@ -40,7 +40,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
     print(f"Default: parameters.adaptiveThresholdConstant: {parameters.adaptiveThreshConstant}")
     print(f"Default: parameters.errorCorrectionRate: {parameters.errorCorrectionRate}")
     # parameters.adaptiveThreshConstant = 4
-    parameters.errorCorrectionRate = 1.9
+    parameters.errorCorrectionRate = 2.0
 
     detector = cv2.aruco.ArucoDetector(dictionary, parameters)
 
@@ -270,7 +270,7 @@ if __name__ == '__main__':
     photo_test_huge_aruco_MISSION_1_shantanu_god = "/home/bryan/Downloads/mission_20230427_170253/arucos"
 
     # Dir input
-    pathinput = "/home/bryan/Downloads/testDay1/KshitijTest4/home/pi/mission_20230423_133734/raspy_0000000612.jpg"
+    pathinput = photo_test_huge_aruco_MISSION_1_shantanu_god
 
     # Call main function
     if os.path.isdir(pathinput):
