@@ -24,6 +24,7 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
     # Use the cvtColor() function to grayscale the image
     gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
+
     if show:
         cv2.imshow('Grayscale', gray_image)
         cv2.waitKey(0)
@@ -39,13 +40,32 @@ def photo_analyzer(filename, id_wanted, show=False, output=None, rotate=None):
     # Modify the parameters
     print(f"Default: parameters.adaptiveThresholdConstant: {parameters.adaptiveThreshConstant}")
     print(f"Default: parameters.errorCorrectionRate: {parameters.errorCorrectionRate}")
+    print(f"Default: parameters.errorCorrectionRate: {parameters.minMarkerPerimeterRate}")
     # parameters.adaptiveThreshConstant = 4
     parameters.errorCorrectionRate = 2.0
 
-    detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+    possible_rates = np.arange(0.03, 0.3, 0.001)
 
+    #for rate in possible_rates:
+    #    parameters.minMarkerPerimeterRate = rate
+#
+    #    detector = cv2.aruco.ArucoDetector(dictionary, parameters)
+#
+    #    markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(gray_image)
+    #    frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
+#
+    #    if len(markerIds) == 1:
+    #        print(f"Number of markers: {len(markerIds)} - Possible rate: {rate}")
+    #        break
+
+    # Optimal value for min marker perimeter rate: 0.06300000000000003
+    opt_rate = 0.06200000000000003
+    parameters.minMarkerPerimeterRate = opt_rate
+    detector = cv2.aruco.ArucoDetector(dictionary, parameters)
     markerCorners, markerIds, rejectedCandidates = detector.detectMarkers(gray_image)
     frame_markers = cv2.aruco.drawDetectedMarkers(frame.copy(), markerCorners, markerIds)
+
+
 
     if markerIds is not None:
         for id in markerIds:
@@ -270,7 +290,7 @@ if __name__ == '__main__':
     photo_test_huge_aruco_MISSION_1_shantanu_god = "/home/bryan/Downloads/mission_20230427_170253/arucos"
 
     # Dir input
-    pathinput = "/home/bryan/Downloads/mission_20230429_111535/raspy_exp_id_0000000974_exp_0.jpg"
+    pathinput = "/home/bryan/Downloads/mission_20230429_111535/"
 
     # Call main function
     if os.path.isdir(pathinput):
