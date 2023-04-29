@@ -287,9 +287,19 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                 # Check overshoot
                 if shutt_idx > len(shutters_array) - 1:
                     shutt_idx = 0
-
-        finally:
+        except Exception as e:
+            logger.print_msg("Something went wrong during main loop... Exiting it..")
+            logger.print_msg(f"Error message follows: {e.__str__()}")
+            logger.print_msg(f"{e.__str__()}")
             camera.stop_preview()
+        finally:
+            try:
+                camera.stop_preview()
+            except Exception as e:
+                logger.print_msg("Something went wrong during when closing the camera... Exiting it..")
+                logger.print_msg(f"Error message follows: {e.__str__()}")
+                logger.print_msg(f"{e.__str__()}")
+
 
     # Result dictionary
     result = {
