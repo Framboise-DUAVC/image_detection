@@ -270,7 +270,7 @@ if __name__ == '__main__':
     photo_test_huge_aruco_MISSION_1_shantanu_god = "/home/bryan/Downloads/mission_20230427_170253/arucos"
 
     # Dir input
-    pathinput = photo_test_huge_aruco_MISSION_1_shantanu_god
+    pathinput = "/home/bryan/Downloads/mission_20230429_111535/raspy_exp_id_0000000974_exp_0.jpg"
 
     # Call main function
     if os.path.isdir(pathinput):
