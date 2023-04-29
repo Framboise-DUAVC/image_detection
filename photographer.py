@@ -137,6 +137,12 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
                                               mission=mission,
                                               do_break=do_break,
                                               offset=offset)
+    # Print messages
+    logger.print_msg(f"Got out from continuous capture main loop:")
+
+    # Print the results
+    for keys in detection_dict_flags:
+        logger.print_msg(f"\t -> {keys} -> {detection_dict_flags[keys]}")
 
     # Print csv file in output folder
     summary_path = os.path.join(output, "summary.csv")
