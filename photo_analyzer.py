@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-good_ones = [7, 97, 216, 222, 184]
+good_ones = [7, 97, 216, 222, 184, 185, 9, 85, 45, 16]
 
 def photo_analyzer(frame, filename, id_wanted, show=False, output=None):
     # Local auxiliary variable
