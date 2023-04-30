@@ -7,12 +7,12 @@ from mavsdk import System
 async def run():
     # Init the drone
     drone = System()
+    print("Trying to connect...")
     await drone.connect(system_address="serial:///dev/serial0:921600")
+
+    print("Connected to the drone!")
     # await drone.connect(system_address="udp://:14540")
     # Start the tasks
-    asyncio.ensure_future(print_battery(drone))
-    asyncio.ensure_future(print_gps_info(drone))
-    asyncio.ensure_future(print_in_air(drone))
     pos = asyncio.ensure_future(print_position(drone))
 
     while True:
