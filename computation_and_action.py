@@ -53,7 +53,7 @@ def gps_and_action(drone: mavsdk.System, logger: Logger.Logger):
             # Break
             break
 
-def launch_parallel(*fns, args):
+def launch_parallel(fns, args):
     proc = []
     for fn in fns:
         p = Process(target=fn(*args))
