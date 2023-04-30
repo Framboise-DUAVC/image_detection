@@ -67,12 +67,14 @@ async def main():
     # Now, loop entirely
     while True:
         if pos.done():
-            print(pos.result())
-
+            # Get current coordinates
             current_coord = pos.result()
 
             # Create shapely circumference
             p_gps = shapely.Point(current_coord["lat"], current_coord["lon"])
+
+            # Print them
+            logger.print_msg(f"Current GPS location: (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}).")
 
             # Compute the distance and the heading
             if circ.contains(p_gps):
@@ -80,10 +82,12 @@ async def main():
                                  f"circle (lat, lon) [deg]: ({circ.x}, {circ.y}")
 
                 # Entered to the drop payload radius
-                raspi_servo_simple.main()
+                raspi_servo_simple.main(logger=logger)
 
                 # Break
                 break
+            else:
+                logger.print_msg(f"Not in the circle...!")
 
 
 async def print_status_text(drone, logger: Logger.Logger):
