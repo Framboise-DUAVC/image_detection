@@ -10,8 +10,8 @@ async def run():
     # await drone.connect(system_address="serial:///dev/serial0:921600")
     await drone.connect(system_address="udp://:14540")
     # Start the tasks
-    pos = asyncio.ensure_future(print_battery(drone))
-    asyncio.ensure_future(print_gps_info(drone))
+    asyncio.ensure_future(print_battery(drone))
+    pos = asyncio.ensure_future(print_gps_info(drone))
     asyncio.ensure_future(print_in_air(drone))
     asyncio.ensure_future(print_position(drone))
 
