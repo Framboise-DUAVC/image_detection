@@ -59,6 +59,9 @@ async def main():
     alfa_rad = math.atan(20 / (6.371*10**6))
     alfa_rad = math.atan(5 / (6.371*10**6))
 
+    # Square coordinates
+    pdrop = {"lat": 45.438966652347794, "lon": -0.42855918999004416}
+
     # Create shapely circumference
     circ_center =shapely.Point(aruco_coord["lat"], aruco_coord["lon"])
     circ = circ_center.buffer(alfa_rad)
@@ -82,8 +85,8 @@ async def main():
         logger.print_msg(f"Current GPS location: (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}).")
 
         # Compute the distance and the heading
-        if circ.contains(p_gps):
-            logger.print_msg(f"GPS point (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}) is within the radius of the "
+        if current_coord["lat"] < pdrop["lat"]:
+            logger.print_msg(f"GPS point (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}) is at the crossing latitude of "
                              f"circle (lat, lon) [deg]: ({circ.x}, {circ.y}")
 
             # Entered to the drop payload radius
