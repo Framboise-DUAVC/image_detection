@@ -37,7 +37,7 @@ def gps_and_action(drone: mavsdk.System, logger: Logger.Logger):
     # Get the GPS coords and compute the distance
     while True:
         # Get the current latitude and longitude
-        current_coord = get_gps_coords(drone=drone, logger=logger)
+        current_coord = await get_gps_coords(drone=drone, logger=logger)
 
         # Create shapely object
         p_gps = shapely.Point(current_coord["lat"], current_coord["lon"])
