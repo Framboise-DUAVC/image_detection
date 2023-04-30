@@ -1,4 +1,6 @@
 import asyncio
+import os
+
 import mavsdk
 
 import Logger
@@ -58,7 +60,6 @@ async def main(verbose: bool = True):
 
     drone.offboard.Attitude(0, -20, 0, 0)
 
-
     # Info
     tools.simple_print_msg("-- Taking off", verbose=verbose)
 
@@ -92,9 +93,11 @@ async def main(verbose: bool = True):
     status_text_task.cancel()
 
 
-def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbose: bool = True) -> None:
+def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbose: bool = True,
+                         output: str = None, detection: bool = True) -> str or os.PathLike or None:
     # Get time formatted as a string
     mission_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = f"/home/pi/mission_{mission_time}" if output is None else output
 
     # Photo id offset
     photo_id = 0
@@ -102,10 +105,11 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
     # Prepare arguments for photographer
     detection_args = ["--dummy_argument_dont_remove_me",
                       "--max_time", "3600",  # time [seconds]
-                      "--output", f"/home/pi/mission_{mission_time}",  # output folder
+                      "--output", output_dir,  # output folder
                       "--mission", "true",  # Mission mode TRUE
                       "--verbose", f"{verbose}",  # Verbose mode enabled?
                       "--do_break", f"True",  # Do break? Yes
+                      "--detection", f"{detection}",  # Do break? Yes
                       "--offset", f"{photo_id}"  # Offset of the iterator
                       ]
 
@@ -156,6 +160,9 @@ def detection_and_action(restart_photo: bool = True, actuate: bool = True, verbo
         else:
             logger.print_msg(f"Setting next photo id starting from: {photo_id}")
             detection_args[-1] = f"{photo_id}"
+
+    # Return the output
+    return output
 
 
 async def print_status_text(drone, verbose: bool):

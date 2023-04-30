@@ -47,7 +47,8 @@ def safety_check_args(args_dict: dict, logger: Logger.Logger):
                 exit(-1)
 
 
-def worker_photo_analyzer(proc_num, frame, filename, id_wanted, logger: Logger, show=False, output=None) -> dict:
+def worker_photo_analyzer(proc_num, frame, filename, id_wanted, logger: Logger, show=False, output=None,
+                          detection=True) -> dict:
     # Start time
     start = time.time()
 
@@ -55,8 +56,11 @@ def worker_photo_analyzer(proc_num, frame, filename, id_wanted, logger: Logger, 
     result_dict = {}
 
     # Call function
-    has_marker = photo_analyzer.photo_analyzer(frame=frame, filename=filename, id_wanted=id_wanted, show=show,
-                                               output=output)
+    if detection:
+        has_marker = photo_analyzer.photo_analyzer(frame=frame, filename=filename, id_wanted=id_wanted, show=show,
+                                                   output=output)
+    else:
+        has_marker = None
 
     # End time
     elapsed = time.time() - start
@@ -86,7 +90,6 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
         global Sentry
         Sentry = True
 
-
     # Set what function to use in case of Ctr+C event
     signal.signal(signal.SIGINT, SignalHandler_SIGINT)
 
@@ -105,6 +108,7 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
     show = args_dict["show"] if "show" in args_dict else False
     mission = True if args_dict["mission"].lower() == "true" else False
     offset = int(args_dict["offset"]) if "offset" in args_dict else 0
+    detection = bool(args_dict["detection"]) if "detection" in args_dict else True
     output = os.path.abspath(output)
 
     # Set the logger options
@@ -135,6 +139,7 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
     detection_dict_flags = continuous_capture(jobs_return_dict, output, show, max_time,
                                               logger=logger,
                                               mission=mission,
+                                              detection=detection,
                                               do_break=do_break,
                                               offset=offset)
     # Print messages
@@ -189,7 +194,7 @@ def photographer_launcher(args: [], logger: Logger.Logger) -> dict:
 
 
 def continuous_capture(result_dict, output, show, max_time, logger, mission=False, do_break=True,
-                       offset=0) -> dict:
+                       offset=0, detection=True) -> dict:
     # Set counter
     i = offset
 
@@ -234,16 +239,17 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                 # and occupied/unoccupied text
                 image = frame.array
 
+                # Build filename
                 filename = os.path.join(output, f"raspy_exp_id_{str(i).zfill(10)}_exp_{camera.shutter_speed}.npy")
 
                 # Build arguments
                 job1_args = (i, image, filename, 7, logger, show, filename.replace('.jpg', '-Analyzed.jpg'))
 
                 # Launch process to evaluate image
-                result_dict[i] = worker_photo_analyzer(*job1_args)
+                result_dict[i] = worker_photo_analyzer(*job1_args, detection=detection)
 
                 # If mission mode
-                if mission:
+                if mission and detection:
                     has_marker = result_dict[i]["info"].get_has_marker()
 
                     if has_marker:
@@ -284,15 +290,15 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                     break
 
                 # Modify the shutter speed
-                #camera.shutter_speed = shutters_array[shutt_idx]
+                # camera.shutter_speed = shutters_array[shutt_idx]
 
                 # Go next value
-                if i % 20 == 0:
-                    shutt_idx += 1
+                # if i % 20 == 0:
+                #     shutt_idx += 1
 
                 # Check overshoot
-                if shutt_idx > len(shutters_array) - 1:
-                    shutt_idx = 0
+                # if shutt_idx > len(shutters_array) - 1:
+                #     shutt_idx = 0
         except Exception as e:
             logger.print_msg("Something went wrong during main loop... Exiting it..")
             logger.print_msg(f"Error message follows: {e.__str__()}")
@@ -305,7 +311,6 @@ def continuous_capture(result_dict, output, show, max_time, logger, mission=Fals
                 logger.print_msg("Something went wrong during when closing the camera... Exiting it..")
                 logger.print_msg(f"Error message follows: {e.__str__()}")
                 logger.print_msg(f"{e.__str__()}")
-
 
     # Result dictionary
     result = {
