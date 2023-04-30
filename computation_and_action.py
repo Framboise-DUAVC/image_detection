@@ -69,7 +69,7 @@ async def main():
     # Launch filmer separately
     filmer = Process(on_y_va.detection_and_action(False, False, True, output, False))
     filmer.start()
-    filmer.join()
+    # filmer.join()
 
     # Now, loop entirely
     while True:
