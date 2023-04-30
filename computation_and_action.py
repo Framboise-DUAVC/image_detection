@@ -57,7 +57,7 @@ async def main():
     circ = circ_center.buffer(alfa_rad)
     # Constant #########################################################################################################
 
-    pos = asyncio.ensure_future(get_gps_coords(drone))
+    # pos = asyncio.ensure_future(get_gps_coords(drone))
 
     # Launch filmer separately
     filmer = Process(on_y_va.detection_and_action(False, False, True, output, False))
@@ -66,28 +66,26 @@ async def main():
 
     # Now, loop entirely
     while True:
-        if pos.done():
-            # Get current coordinates
-            current_coord = pos.result()
+        current_coord = await get_gps_coords(drone)
 
-            # Create shapely circumference
-            p_gps = shapely.Point(current_coord["lat"], current_coord["lon"])
+        # Create shapely circumference
+        p_gps = shapely.Point(current_coord["lat"], current_coord["lon"])
 
-            # Print them
-            logger.print_msg(f"Current GPS location: (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}).")
+        # Print them
+        logger.print_msg(f"Current GPS location: (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}).")
 
-            # Compute the distance and the heading
-            if circ.contains(p_gps):
-                logger.print_msg(f"GPS point (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}) is within the radius of the "
-                                 f"circle (lat, lon) [deg]: ({circ.x}, {circ.y}")
+        # Compute the distance and the heading
+        if circ.contains(p_gps):
+            logger.print_msg(f"GPS point (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}) is within the radius of the "
+                             f"circle (lat, lon) [deg]: ({circ.x}, {circ.y}")
 
-                # Entered to the drop payload radius
-                raspi_servo_simple.main(logger=logger)
+            # Entered to the drop payload radius
+            raspi_servo_simple.main(logger=logger)
 
-                # Break
-                break
-            else:
-                logger.print_msg(f"Not in the circle...!")
+            # Break
+            break
+        else:
+            logger.print_msg(f"Not in the circle...!")
 
 
 async def print_status_text(drone, logger: Logger.Logger):
