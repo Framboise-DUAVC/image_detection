@@ -1,4 +1,5 @@
 import math
+import time
 
 import mavsdk
 import on_y_va
@@ -46,11 +47,17 @@ async def main():
     # Detection and action test
     output = on_y_va.detection_and_action(restart_photo=False, actuate=False, verbose=True)
 
+    logger.print_msg(f"Detection done.")
+    time.sleep(5)
+
     # Constant #########################################################################################################
-    aruco_coord = {"lat":45.43960862871248, "lon": -0.4283431162652947}
+    # 45.43902118017643, -0.4285439616278502
+    aruco_coord = {"lat":45.43960862871248, "lon": -0.4283431162652947} # actual aruco
+    aruco_coord = {"lat":45.43902118017643, "lon": -0.4285439616278502} # test
 
     # Create a circumference within this point
     alfa_rad = math.atan(20 / (6.371*10**6))
+    alfa_rad = math.atan(5 / (6.371*10**6))
 
     # Create shapely circumference
     circ_center =shapely.Point(aruco_coord["lat"], aruco_coord["lon"])
