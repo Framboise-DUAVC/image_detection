@@ -67,8 +67,8 @@ async def main():
     # pos = asyncio.ensure_future(get_gps_coords(drone))
 
     # Launch filmer separately
-    filmer = Process(on_y_va.detection_and_action(False, False, True, output, False))
-    filmer.start()
+    #filmer = Process(on_y_va.detection_and_action(False, False, True, output, False))
+    #filmer.start()
     # filmer.join()
 
     # Now, loop entirely
