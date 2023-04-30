@@ -11,60 +11,13 @@ import shapely
 import raspi_servo_simple
 
 
-async def get_gps_coords(drone: mavsdk.System, logger: Logger.Logger) -> None:
-    async for gps_info in drone.telemetry.gps_info():
-        logger.print_msg(f"GPS info: {gps_info}")
+async def get_gps_coords(drone: mavsdk.System) -> dict:
+    async for pos in drone.telemetry.position():
+        result = {"lat": pos.latitude_deg,
+                  "lon": pos.longitude_deg}
 
-    pos = drone.telemetry.position()
+        return result
 
-    print(pos)
-
-    return {"lat": pos.latitude_deg, "lon": pos.longitude_deg}
-
-
-def gps_and_action(drone: mavsdk.System, logger: Logger.Logger):
-    # Constant
-    aruco_coord = {"lat":45.43960862871248, "lon": -0.4283431162652947}
-
-    # Create a circumference within this point
-    alfa_rad = math.atan(20 / (6.371*10**6))
-
-    # Create shapely circumference
-    circ_center =shapely.Point(aruco_coord["lat"], aruco_coord["lon"])
-    circ = circ_center.buffer(alfa_rad)
-
-    # Current coordinates
-    current_coord = {"lat": 45.43936665174612, "lon": -0.42839921605266745}
-
-    # Get the GPS coords and compute the distance
-    while True:
-        # Get the current latitude and longitude
-        current_coord = await get_gps_coords(drone=drone, logger=logger)
-
-        print(current_coord)
-
-        # Create shapely object
-        p_gps = shapely.Point(current_coord["lat"], current_coord["lon"])
-
-        # Compute the distance and the heading
-        if circ.contains(p_gps):
-            logger.print_msg(f"GPS point (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}) is within the radius of the circle "
-                             f"(lat, lon) [deg]: ({circ.x}, {circ.y}")
-
-            # Entered to the drop payload radius
-            raspi_servo_simple.main()
-
-            # Break
-            break
-
-def launch_parallel(fns, args):
-    proc = []
-    for fn in fns:
-        p = Process(target=fn(*args))
-        p.start()
-        proc.append(p)
-    for p in proc:
-        p.join()
 
 async def main():
 
@@ -93,21 +46,44 @@ async def main():
     # Detection and action test
     output = on_y_va.detection_and_action(restart_photo=False, actuate=False, verbose=True)
 
-    # Now, start monitoring gps --> Parallel pipe
-    gps_monitor_and_action_args = (drone, logger)
-    gps_monitor_and_action = gps_and_action
+    # Constant #########################################################################################################
+    aruco_coord = {"lat":45.43960862871248, "lon": -0.4283431162652947}
 
-    # Now, keep doing photos like hell --> Parallel pipe --> DETECTION DISABLED
-    filmer_args = (False, False, True, output, False)
-    filmer = on_y_va.detection_and_action
+    # Create a circumference within this point
+    alfa_rad = math.atan(20 / (6.371*10**6))
 
-    # Launch them parallely: prepare input
-    args = [gps_monitor_and_action_args, filmer_args]
-    fns = [gps_monitor_and_action, filmer]
+    # Create shapely circumference
+    circ_center =shapely.Point(aruco_coord["lat"], aruco_coord["lon"])
+    circ = circ_center.buffer(alfa_rad)
+    # Constant #########################################################################################################
 
-    # Launch prallel
-    launch_parallel(fns, args)
+    pos = asyncio.ensure_future(get_gps_coords(drone))
 
+    # Launch filmer separately
+    filmer = Process(on_y_va.detection_and_action(False, False, True, output, False))
+    filmer.start()
+    filmer.join()
+
+    # Now, loop entirely
+    while True:
+        if pos.done():
+            print(pos.result())
+
+            current_coord = pos.result()
+
+            # Create shapely circumference
+            p_gps = shapely.Point(current_coord["lat"], current_coord["lon"])
+
+            # Compute the distance and the heading
+            if circ.contains(p_gps):
+                logger.print_msg(f"GPS point (lat, lon) [deg]: ({p_gps.x}, {p_gps.y}) is within the radius of the "
+                                 f"circle (lat, lon) [deg]: ({circ.x}, {circ.y}")
+
+                # Entered to the drop payload radius
+                raspi_servo_simple.main()
+
+                # Break
+                break
 
 
 async def print_status_text(drone, logger: Logger.Logger):

@@ -16,7 +16,6 @@ async def run():
     pos = asyncio.ensure_future(print_position(drone))
 
     while True:
-        await asyncio.sleep(1)
         if pos.done():
             print(pos.result())
 
