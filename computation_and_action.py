@@ -20,7 +20,7 @@ async def get_gps_coords(drone: mavsdk.System, logger: Logger.Logger) -> None:
     return {"lat": pos.latitude_deg, "lon": pos.longitude_deg}
 
 
-def gps_and_action(drone: mavsdk.System, logger: Logger.Logger):
+async def gps_and_action(drone: mavsdk.System, logger: Logger.Logger):
     # Constant
     aruco_coord = {"lat":45.43960862871248, "lon": -0.4283431162652947}
 
@@ -93,7 +93,7 @@ async def main():
 
     # Now, start monitoring gps --> Parallel pipe
     gps_monitor_and_action_args = (drone, logger)
-    gps_monitor_and_action = gps_and_action
+    gps_monitor_and_action = await gps_and_action
 
     # Now, keep doing photos like hell --> Parallel pipe --> DETECTION DISABLED
     filmer_args = (False, False, True, output, False)
