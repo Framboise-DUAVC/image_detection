@@ -17,7 +17,7 @@ async def run():
 
     while True:
         await asyncio.sleep(1)
-        print(pos)
+        print(pos.result())
 
 
 async def print_battery(drone):
