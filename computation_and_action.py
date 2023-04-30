@@ -117,4 +117,6 @@ async def print_status_text(drone, logger: Logger.Logger):
 if __name__ == '__main__':
 
     # Call to main running function
-    main()
+    # Call main running function
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
