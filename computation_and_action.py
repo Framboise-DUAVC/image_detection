@@ -15,7 +15,9 @@ async def get_gps_coords(drone: mavsdk.System, logger: Logger.Logger) -> None:
     async for gps_info in drone.telemetry.gps_info():
         logger.print_msg(f"GPS info: {gps_info}")
 
-    return {"lat": gps_info.lat, "lon": gps_info.lon}
+    pos = drone.telemetry.position()
+
+    return {"lat": pos.latitude_deg, "lon": pos.longitude_deg}
 
 
 def gps_and_action(drone: mavsdk.System, logger: Logger.Logger):
@@ -60,7 +62,7 @@ def launch_parallel(*fns, args):
     for p in proc:
         p.join()
 
-def main():
+async def main():
 
     # Compute current time
     mission_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
