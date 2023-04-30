@@ -38,8 +38,8 @@ async def print_in_air(drone):
 async def print_position(drone):
     async for position in drone.telemetry.position():
 
-        result = {"lat": str(position[0]).split(":")[1],
-                  "lon": str(position[1]).split(":")[1]}
+        result = {"lat": position.latitude_deg,
+                  "lon": position.longitude_deg}
 
         return result
 
